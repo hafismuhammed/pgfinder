@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{% if messsages %}
+			{% for message in messages %}
+			
+				<div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+					{{ message }}
+					<button type="button" class="close" data-dismiss="alert" aria-label="close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				
+				{% endfor %}
+				{% endif %}
+<form action="{% url 'edit_property' property.id %}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	{% load crispy_forms_tags %}
+	<div class="col-md-4 offset-md-4">
+		<h1>YOUR PROPERTY</h1>
+		<div class="form-group">
+			{{ form|crispy }}
+			<div class="form-group">
+				<input type="submit" name="submit" value="Upload" class="form-controll">
+			</div>
+		</div>
+	</div>
+</form>
+{% endblock %}	

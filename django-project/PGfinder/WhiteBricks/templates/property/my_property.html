@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+	
+{% if messsages %}
+	{% for message in messages %}
+	{% if message.tags %}		
+	<div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
+		{{ message }}
+		<button type="button" class="close" data-dismiss="alert" aria-label="close">
+		    <span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	{% endif %}			
+	{% endfor %}
+	{% endif %}
+		<h1 class="text-center">Your Properties</h1>
+		{% for property in properties %}
+		<div class="row">
+			<div class="col-sm-3 col-md-3"></div>
+			<div class="col-sm-4 col-md-4">
+				<img  class="img-responsive" src="{{ property.images.url }}" style="width: 100%">
+			</div>
+			<div class="col-sm-5 col-md-5">
+				<div class="caption">
+					<div>
+							{{property.city}}
+						</div>
+						<div>
+							{{property.location}}
+						</div>
+						<div>
+							{{property.facilites}}
+						</div>
+						<div>
+							{{property.rent}}
+						</div>
+						<div>
+							<a href="{% url 'edit_property' property.id %}" class="btn btn-success">Edit</a>
+							<a href="{% url 'delete_property' property.id %}" class="btn btn-danger">Delete</a>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+		<hr>
+		{% endfor %}
+	{% endblock %}
+	

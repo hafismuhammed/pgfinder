@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Rooms</title>
+</head>
+<body>
+	{% if user.is_authenticated %}
+	<form action="{% url 'portfolio' %}" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		{% load crispy_forms_tags %}
+		<div class="col-md-4 col-md-offset-4">
+			<h1>YOUR PROPERTY</h1>
+			<div class="form-group">
+				{{form|crispy}}
+				<div class="form-group">
+					<input type="submit" name="submit" value="Upload" class="form-controll">
+				</div>
+			</div>
+		</div>
+	</form>
+	{% endif %}
+</body>
+</html>

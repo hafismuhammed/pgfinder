@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+	{% if accomodations %}
+	<h1 class="text-center">Your accomadations are</h1>
+	{% for accomodation in accomodations %}
+	<div class="col-sm-6">
+		<div class="tumbnail">
+			<img src="{{accomodation.images.url}}" class="img-responsive" style="width:100%">
+		</div>
+		<div>
+			{{accomodation.city}}
+		</div>
+		<div>
+			{{accomodation.location}}
+		</div>
+		<div>
+			{{accomodation.facilites}}
+		</div>
+		<div>
+			{{accomodation.rent}}
+		</div>
+		<!--
+		<div>
+			{{accomodation.email}}
+		</div>
+		<div>
+			{{accomodation.mobile}}
+		</div>
+	-->
+	
+<button id="request-btn" class="btn btn-primary">Click to get response</button>
+<div id=response></div>
+
+	</div>
+	<hr>
+	{% endfor %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#request-btn").click(function(){
+            $.ajax({
+               url: "/whitebricks/contact_details/",
+               type: "GET",
+               dataType:"json",
+               success: function(result){
+
+                $.each(result, function() {
+                    html = "Name:" + this.email + "<br>" +"tagline:" + this.mobile + "<hr>"
+                    $("#response").append(html)
+                });
+            }
+        });
+        });
+    }); 
+</script>
+    {% else %}
+    <h1>Not Found</h1>
+    {% endif %}
+   
+{% endblock %}

@@ -8,13 +8,14 @@ urlpatterns = [
     path('home/', views.index, name='home'),
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
-    path('portfolio/', views.MyProperty, name='portfolio'),
+    path('portfolio/', views.portfolio, name='portfolio'),
     path('register/', views.Register, name='register'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('login/', views.loginPage, name='login'),
     path('logout', views.logingout, name='logout'),
     #path('insert/', views.Adverticement, name='myad'),
     path('search/', views.search, name='search'),
+    path('my_property', views.MyProperty, name='my_property'),
     
     #path(
     #    'reset_password/',

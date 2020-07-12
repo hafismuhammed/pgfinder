@@ -93,7 +93,7 @@ def Register(request):
       return HttpResponse('account created')
 
   else:
-      return render(request, "myhome/home.html")
+      return render(request, "myhome/register.html")
 
 def activate(request, uidb64, token):
   try:
@@ -193,7 +193,7 @@ def search(request):
 #property view
 def MyProperty(request):
   properties = Property.objects.filter(owner=request.user)
-  context = {"properties":properties}
+  context = { "properties":properties }
   return render(request, 'property/my_property.html', context)
 
 # editing

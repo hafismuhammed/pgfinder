@@ -4,11 +4,15 @@
 
 	{% if accomodations %}
 	<h1 class="text-center">Your accomadations are</h1>
+		
 	{% for accomodation in accomodations %}
-	<div class="col-sm-6">
-		<div class="tumbnail">
-			<img src="{{accomodation.images.url}}" class="img-responsive" style="width:100%">
-		</div>
+	<div class="row">
+		<div class="col-sm-3 col-md-3"></div>
+	<div class="col-sm-4 col-md-4">
+		<img src="{{accomodation.images.url}}" class="img-responsive" style="width:100%">
+	</div>
+	<div class="col-sm-5 col-md-5">
+		<div class="caption">
 		<div>
 			{{accomodation.city}}
 		</div>
@@ -29,13 +33,14 @@
 			{{accomodation.mobile}}
 		</div>
 	-->
-	
-<button id="request-btn" class="btn btn-primary">Click to get response</button>
-<div id=response></div>
-
-	</div>
+	<button id="request-btn" class="btn btn-primary">Contact info:</button>
+	<div id=response></div>
+</div>
+</div>
+</div>
 	<hr>
 	{% endfor %}
+	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <script type="text/javascript">
@@ -48,7 +53,7 @@
                success: function(result){
 
                 $.each(result, function() {
-                    html = "Name:" + this.email + "<br>" +"tagline:" + this.mobile + "<hr>"
+                    html = "Email:" + this.email + "<br>" +"Mobile:" + this.mobile + "<hr>"
                     $("#response").append(html)
                 });
             }

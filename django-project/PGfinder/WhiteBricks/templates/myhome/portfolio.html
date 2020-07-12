@@ -1,9 +1,3 @@
-<!--
-Author: W3layouts
-Author URL: http://w3layouts.com
-License: Creative Commons Attribution 3.0 Unported
-License URL: http://creativecommons.org/licenses/by/3.0/
--->
 
 <!DOCTYPE html>
 <html lang="zxx">
@@ -92,14 +86,24 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 									</ul>
 								</div>
 								<!-- //social icons -->
+								{% if user.is_authenticated %}
 								<div class="col-4 header-loginw3ls text-lg-right text-center">
-									<a href="#" class="log" data-toggle="modal" data-target="#exampleModalCenter1">
+									<a href="{% url 'logout' %}" class="log" >
+										<i class="fas fa-user mr-2"></i> logout</a>
+								</div>
+								<div class="col-4 header-loginw3ls">
+									<p>hi, {{user.first_name}}</p>
+								</div>
+								{% else %}
+								<div class="col-4 header-loginw3ls text-lg-right text-center">
+									<a href="{% url 'login' %}" >
 										<i class="fas fa-user mr-2"></i> Login</a>
 								</div>
 								<div class="col-4 header-loginw3ls">
-									<a href="#" class="log" data-toggle="modal" data-target="#exampleModalCenter2">
+									<a href="{% url 'register' %}" class="log">
 										<i class="fas fa-key mr-2"></i> Register</a>
 								</div>
+								{% endif %}
 							</div>
 						</div>
 					</div>
@@ -156,107 +160,23 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<div class="banner-w3ltext about-w3bnr">
 			<div class="container">
 				<h1 class="text-white text-center">
-					<a href="{% url 'home' %}">Home</a> / Portfolio</h1>
+					<a href="{% url 'home' %}">Home</a> / Property</h1>
 			</div>
 		</div>
 		<!-- //banner-text -->
 	</div>
-	<!-- login -->
-	<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header text-center">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="login px-4 mx-auto mw-100">
-						<h5 class="text-center mb-4">Login Now</h5>
-						<form action="#" method="post">
-							<div class="form-group">
-								<label>Username</label>
-								<input type="text" class="form-control" name="text" placeholder="" required="">
-							</div>
-							<div class="form-group">
-								<label class="mb-2">Password</label>
-								<input type="password" class="form-control" name="password" placeholder="" required="">
-							</div>
-							<button type="submit" class="btn btn-primary submit mb-4">Login</button>
-							<p class="text-center pb-4">
-								<a href="#">Forgot your password?</a>
-							</p>
-							<p class="text-center pb-4">
-								Don't have an account?
-								<a href="#" data-toggle="modal" data-target="#exampleModalCenter2">Create one now</a>
-							</p>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- //login -->
-	<!-- register -->
-	<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header text-center">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="login px-4 mx-auto mw-100">
-						<h5 class="text-center mb-4">Register Now</h5>
-						<form action="#" method="post">
-							<div class="form-group">
-								<label>First Name</label>
-								<input type="text" class="form-control" name="first_name" laceholder="" required="">
-							</div>
-							<div class="form-group">
-								<label>Last Name</label>
-								<input type="text" class="form-control" name="last_name" placeholder="" required="">
-							</div>
-							<div class="form-group">
-								<label>Username</label>
-								<input type="text" class="form-control" name="username" placeholder="" required="">
-							</div>
-							<div class="form-group">
-								<label>Email</label>
-								<input type="email" class="form-control" name="Email" placeholder="" required="">
-							</div>
-							<div class="form-group">
-								<label class="mb-2">Password</label>
-								<input type="password" class="form-control" name="password1" id="password1" placeholder="" required="">
-							</div>
-							<div class="form-group">
-								<label>Confirm Password</label>
-								<input type="password" class="form-control" name="password2" id="password2" placeholder="" required="">
-							</div>
-							<button type="submit" class="btn btn-primary submit mb-4">Register</button>
-							<p class="text-center pb-4">
-								<a href="#">By clicking Register, I agree to your terms</a>
-							</p>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!--//register-->
 	<!-- //banner -->
 
 	<!-- gallery -->
 	<section class="wthree-row w3-gallery py-5">
 		<div class="container py-xl-5 py-lg-3">
 			<div class="text-center mb-lg-5 mb-4">
-				<h3 class="tittle mb-2">Portfolio</h3>
-				<p>See Our Portfolio</p>
+				<h3 class="tittle mb-2">My Property</h3>
+				<p>See your roperty</p>
 			</div>
 			<ul class="portfolio-categ filter mb-5 pb-4 text-center border-bottom">
 				<li class="port-filter all active">
-					<a href="#">All</a>
+					<a href="{% url 'my_property' %}">All</a>
 				</li>
 				<li class="cat-item-1">
 					<a href="#" title="Category 1">Bedroom</a>
@@ -279,11 +199,36 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 			</ul>
 			<ul class="portfolio-area clearfix">
 				<li class="portfolio-item2" data-id="id-1" data-type="cat-item-1">
-					<span class="image-block">
-						<a class="image-zoom" href="{% static 'myhome/images/g1.jpg' %}" data-gal="prettyPhoto[gallery]">
-							<img src="{% static 'myhome/images/g1.jpg' %}" class="img-fluid w3layouts agileits" alt="Traventure">
-						</a>
-					</span>
+					{% for property in properties %}
+		<div class="row">
+			<div class="col-sm-3 col-md-3"></div>
+			<div class="col-sm-4 col-md-4">
+				<img  class="img-responsive" src="{{ property.images.url }}" style="width: 100%">
+			</div>
+			<div class="col-sm-5 col-md-5">
+				<div class="caption">
+					<div>
+							{{property.city}}
+						</div>
+						<div>
+							{{property.location}}
+						</div>
+						<div>
+							{{property.facilites}}
+						</div>
+						<div>
+							{{property.rent}}
+						</div>
+						<div>
+							<a href="{% url 'edit_property' property.id %}" class="btn btn-success">Edit</a>
+							<a href="{% url 'delete_property' property.id %}" class="btn btn-danger">Delete</a>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+		<hr>
+		{% endfor %}
 				</li>
 				<li class="portfolio-item2" data-id="id-2" data-type="cat-item-2">
 					<span class="image-block">

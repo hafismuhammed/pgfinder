@@ -23,13 +23,13 @@
 			<!-- contact map -->
 			<div class="col-lg-6 map text-center">
 				<h4>Our world wide range of Branches </h4>
-				<img src="{% static 'myhome/image/house2.jpg' %}" alt="" class="img-fluid" />
+				<img src="{% static 'myhome/image/house2.jpg' %}" alt="" class="img-fluid">
 			</div>
 			<!-- //contact map -->
 			<!-- form -->
 			<div class="col-lg-6 wthree-form-left mt-lg-0 mt-5">
 				<div class="contact-top1">
-					<form action="{% url 'edit_property' property.id %}" method="post" enctype="multipart/form-data">
+					<form action="{% url 'new_property' property.id %}" method="post" enctype="multipart/form-data">
 						{% csrf_token %}
 						{% load crispy_forms_tags %}
 							<div class="form-group">

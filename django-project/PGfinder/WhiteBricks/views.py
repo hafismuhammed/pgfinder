@@ -194,7 +194,7 @@ def search(request):
 def MyProperty(request):
   properties = Property.objects.filter(owner=request.user)
   context = { "properties":properties }
-  return render(request, 'property/my_property.html', context)
+  return render(request, 'myhome/portfolio.html', context)
 
 # editing
 def edit_property(request, requested_property_id):

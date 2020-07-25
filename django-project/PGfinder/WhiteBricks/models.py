@@ -14,6 +14,18 @@ class Property(models.Model):
     email = models.EmailField()
     mobile = models.IntegerField(null=True)
     date = models.DateTimeField(auto_now_add=True)
+    notify = models.ManyToManyField(User, default=None, blank=True, related_name='Liked')
 
     def __str__(self):
         return self.headline 
+
+
+class Notifications(models.Model):
+    owner = models.ForeignKey(User, null=True, blank=True,on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, null=True, blank=True,on_delete=models.CASCADE)
+    notification = models.TextField()
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str_(self):
+        return self.notification
+

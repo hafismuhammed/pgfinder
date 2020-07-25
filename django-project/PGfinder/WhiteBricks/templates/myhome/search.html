@@ -29,19 +29,30 @@
 		</div>
 		<div class="col-sm-5 col-md-5">
 			<div class="caption">
+				<h3>{{ accomodation.headline }}</h3>
 				<div>
-					{{accomodation.city}}
+					{{ accomodation.city }}
 				</div>
 				<div>
-					{{accomodation.location}}
+					{{ accomodation.location }}
 				</div>
 				<div>
-					{{accomodation.facilites}}
+					{{ accomodation.facilites }}
 				</div>
 				<div>
-					{{accomodation.rent}}
+					{{ accomodation.rent }}
 				</div>
-				<button id="request-btn" class="btn btn-primary">Contact info:</button>
+				<div>
+					{{ accomodation.owner }}
+				</div>
+				<div>
+					{{ accomodation.id }}
+				</div>
+				<form action="{% url 'like_post'  %}" method="post" id="notify_form" >
+					{% csrf_token %}
+				<input type="hidden" name="owner_id" value="{{ accomodation.owner }}">
+				<button id="request-btn" name="property_id" value="{{ accomodation.id }}" class="btn btn-primary">Contact info:</button>
+				</form>
 				<div id=response></div>
 			</div>
 		</div>
@@ -52,6 +63,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <script type="text/javascript">
+
     $(document).ready(function(){
         $("#request-btn").click(function(){
             $.ajax({
@@ -68,6 +80,44 @@
         });
         });
     }); 
+
+$(document).ready(function(e){
+	$(document).on('submit','#request-btn',function(e){
+		e.preventDefault();
+		var property_id = $this.attr('value');
+		var owner_id = $this.attr('value');
+
+		$.ajax({
+			type:'POST',
+			url:"{% url 'like_post' %}",
+			data:$('#notify_form').serialize(),
+			dataType:'Json',
+			success:function(){
+				console.log('success')
+			}
+
+		});
+	});
+});
+/*
+	$(document).ready(function(event){
+		$(document).on('click', '#like', function(event){
+			event.preventDefault();
+			var pk = $(this).attr('value');
+			$.ajax({
+				type: "POST",
+				url: "{% url 'like_post' %}",
+				data: {'id':pk, "csrfmiddlewaretoken": '{{ csrf_token }}'},
+				dataType: "json",
+				success: function(response){
+					$('#like_section').html(response['form'])
+				},
+				error: function(rs, e){
+					console.log(rs.responseText);
+				}
+			});
+		});
+	});*/
 </script>
     {% else %}
     <h1>Not Found</h1>

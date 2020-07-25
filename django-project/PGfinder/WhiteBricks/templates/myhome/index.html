@@ -3,7 +3,7 @@
 <html lang="zxx">
 
 <head>
-	<title>District Real Estates Category Bootstrap Responsive website Template | Home :: W3layouts</title>
+	<title>WhiteBricks Real Estates Category Bootstrap Responsive website Template | Home :: WhiteBricks</title>
 	<!-- Meta tag Keywords -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="UTF-8" />
@@ -104,7 +104,7 @@
 
 					<!-- navigation -->
 					<nav class="navbar navbar-expand-lg navbar-light bg-light">
-						<a class="navbar-brand" href="#">White Bricks
+						<a class="navbar-brand" href="#">WhiteBricks
 							<span>Real Property</span>
 						</a>
 						<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -136,7 +136,7 @@
 									</div>
 								</li>
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
-									<a class="nav-link" href="{% url 'portfolio' %}">Portfolio</a>
+									<a class="nav-link" href="{% url 'my_property' %}">Properties</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
@@ -165,7 +165,7 @@
 				
 					{% endfor %}
 				{% endif %}
-					<h1>Perfect Property</h1>
+					<h1>Perfect Place</h1>
 					<h4 class="text-uppercase mt-md-3 mt-2 mb-md-4 mb-3">for your home</h4>
 					<p class="text-white">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
 						ullamco laboris</p>
@@ -215,7 +215,7 @@
 								<option value="">4BHK</option>
 								<option value="">5BHK</option>
 							</select>-->
-							<div class="sel"><input type="text" name="search" placeholder="search.." required></div>
+							<div><input type="search" name="search" placeholder="search..." class="sel"></div>
 						</div>
 						<div class="col-sm-3 col-6 place-grid">
 							<input type="submit" value="Search">
@@ -441,7 +441,7 @@
 		<div class="container-fluid py-xl-5 py-lg-3">
 			<div class="row">
 				<div class="col-lg-6 left-build-wthree aboutright-agilewthree mt-0">
-					<h4>Sell Your Best House</h4>
+					<h4>Find your Your Best House</h4>
 					<h6 class="mt-3 mb-5">Some words about our property</h6>
 					<div class="row mb-xl-5 mb-4">
 						<div class="col-4 w3layouts_stats_left w3_counter_grid">
@@ -609,10 +609,10 @@
 						<div class="col-md-9 address-right text-left">
 							<h6 class="ad-info text-uppercase mb-2">Email</h6>
 							<p>
-								<a href="mailto:example@email.com"> mail 1@example.com</a>
+								<a href="mailto:example@email.com"> whitebricks 1@example.com</a>
 							</p>
 							<p>
-								<a href="mailto:example@email.com"> mail 2@example.com</a>
+								<a href="mailto:example@email.com"> whitebricks 2@example.com</a>
 							</p>
 						</div>
 
@@ -637,8 +637,8 @@
 						</div>
 						<div class="col-md-9 address-right text-left">
 							<h6 class="ad-info text-uppercase mb-2">Address</h6>
-							<p> 786 Main Road, hollies</p>
-							<p> California, USA</p>
+							<p> WhiteBricks Inc Pvt Ltd,</p>
+							<p> New York, USA</p>
 						</div>
 					</div>
 				</div>
@@ -675,8 +675,8 @@
 
 	<!-- copyright -->
 	<div class="copy_right py-4 text-center">
-		<p class="text-white">© 2018 District. All rights reserved | Design by
-			<a href="http://w3layouts.com/">W3layouts</a>
+		<p class="text-white">©  WhiteBricks. All rights reserved | Design by
+			<a href="http://w3layouts.com/">Muhammed Hafis</a>
 		</p>
 	</div>
 	<!-- //copyright -->
@@ -728,6 +728,12 @@
 				document.getElementById("password2").setCustomValidity('');
 			//empty string means no validation error
 		}
+
+		setTimeout(function(){
+		if ($('#msg').length > 0) {
+			$('#msg').remove();
+		}
+		}, 2000)
 	</script>
 	<!-- //password-script -->
 

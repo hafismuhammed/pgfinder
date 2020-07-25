@@ -8,7 +8,7 @@ urlpatterns = [
     path('home/', views.index, name='home'),
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
-    path('portfolio/', views.MyProperty, name='portfolio'),
+    path('my_property/', views.my_property, name='my_property'),
     path('register/', views.Register, name='register'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('login/', views.loginPage, name='login'),
@@ -50,4 +50,15 @@ urlpatterns = [
     path('reset_password_done', auth_views.PasswordResetDoneView.as_view(template_name='myhome/reset_email_sent.html'), name='password_reset_done'),
     path('reset/confirm/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name='myhome/reset_password_update.html'), name='password_reset_confirm'),
     path('password_reset_complete', auth_views.PasswordResetCompleteView.as_view(template_name='myhome/password_reset_done.html'), name='password_reset_complete'),
+
+    path('like/', views.like_post, name='like_post'),
+    #path('', views.post_view, name='post-list'),
+# for trial
+    #path('password_reset', auth_views.password_reset,  name='password_reset'),
+    #path('reset_password_done', auth_views.password_reset_done, name='password_reset_done'),
+    #path('password-reset/confirm/<uidb64>/<token>', auth_views.password_reset_confirm, name='password_reset_confirm'),
+    #path('password_reset_complete', auth_views.password_reset_complete, name='password_reset_complete'),
+    
     ]
+
+   

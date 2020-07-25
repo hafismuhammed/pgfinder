@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+{% for obj in qs %}
+    <h1>{{ obj.headline }}</h1>
+    <p>{{ obj.city }}</p>
+    <p>{{ obj.location }}</p>
+    <form action="{% url 'posts:like-post' %}" method="POST">
+        <input type="hidden" name="post_id" value="{{ obj.id }}">
+        {% if user not in obj.like.all %}
+        <button type="submit">like</button>
+        {% else %}
+        <button type="submit">unlike</button>
+        {% endif %}
+    </form>
+    <strong>{{ obj.liked.all.count }}</strong>
+    {% endfor %}
+    {% endblock %}

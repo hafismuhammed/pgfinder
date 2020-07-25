@@ -20,6 +20,13 @@
 				<h3 class="tittle mb-2">My Property</h3>
 				<p>See your roperty</p>
 			</div>
+			{% if messages %}
+    		{% for message in messages %}
+    		<div  {% if messages.tags %} class="alert {{ messages.tags }} alert-dismissible fade show" id="msg" role="alert" {% endif %}>
+				{{ message }}
+    		</div>
+    		{% endfor %}
+			{% endif %} 
 			<ul class="portfolio-categ filter mb-5 pb-4 text-center border-bottom">
 				<li class="port-filter all active">
 					<a href="{% url 'new_property' %}">Add property</a>
@@ -43,19 +50,6 @@
 					<a href="#" title="Category 6">Pool</a>
 				</li>
 			</ul>
-			{% if messsages %}
-	{% for message in messages %}
-	{% if message.tags %}		
-	<div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
-		{{ message }}
-		<button type="button" class="close" data-dismiss="alert" aria-label="close">
-		    <span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-	{% endif %}			
-	{% endfor %}
-	{% endif %}
-	
 		{% for property in properties %}
 		<div class="row">
 			<div class="col-sm-2 col-md-2"></div>
@@ -64,6 +58,7 @@
 			</div>
 			<div class="col-sm-5 col-md-5">
 				<div class="caption">
+					<h3>{{ property.headline }}</h3>
 					<div>
 							{{property.city}}
 						</div>
@@ -104,5 +99,6 @@
 		<!-- //property container -->
 	</section>
 	<!-- //gallery -->
+	
 
 	{% endblock %}

@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
-<div class="col-md-4 offset-md-4 col-sm-7 offset-sm-2">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header text-center"></div>
-				<div class="modal-body">
-					<div class="login px-4 mx-auto mw-100">
-						<h5 class="text-center mb-4">Login Now</h5>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="modal-body">
+            <div class="my-5 p-5 pro">
+                <h5 class="text-center mb-4">Login</h5> <hr>
+						{% if messages %}
+						{% for message in messages %}
+						<div class="alert alert-danger alert-dismissible fade show" id="msg" role="alert" >
+							{{ message }}
+						</div>
+						{% endfor %}
+						{% endif %} 
 						<form action="{% url 'login' %}" method="post">
 							{% csrf_token %}
 							<div class="form-group">
@@ -21,11 +26,11 @@
 							</div>
 							<button type="submit" class="btn btn-primary submit mb-4">Login</button>
 							<p class="text-center pb-4">
-								<a href="{% url 'reset_password' %}">Forgot your password?</a>
+								<a href="{% url 'forgot_password' %}">Forgot your password?</a>
 							</p>
 							<p class="text-center pb-4">
 								Don't have an account?
-								<a href="#" data-toggle="modal" data-target="#exampleModalCenter2">Create one now</a>
+								<a href="{% url 'register' %}">Create one now</a>
 							</p>
 						</form>
 					</div>

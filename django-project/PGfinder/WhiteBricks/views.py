@@ -1,3 +1,5 @@
+import json
+import random
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.models import User
@@ -8,43 +10,51 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.status import (
-  HTTP_400_BAD_REQUEST,
-  HTTP_404_NOT_FOUND,
-  HTTP_200_OK
-)
-from rest_framework.response import Response
+#from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.core.mail import EmailMessage
 from django.db.models import Q 
 
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-from .models import Property, Notifications 
-from .forms import AccomodationForm
+from .models import Property, Notifications, Profile 
+from .forms import AccomodationForm, ProfileForm, PasswordChangeForm
 from .filters import OrderFilter
 from .serializer import PropertySerializer
-
+#from .decerator import ajax_login_required
 #for the trial
 
 
 # Home page
 def index(request):
-  return render(request, 'myhome/index.html')
+  context = {}
+  if request.user.is_authenticated:
+    profile = Profile.objects.get(user=request.user.id)
+    context = {'profile': profile}
+  return render(request, 'myhome/index.html', context)
 
 # About us
 def about(request):
-  return render(request, "myhome/about.html")
+  context = {}
+  if request.user.is_authenticated:
+    profile = Profile.objects.get(user=request.user.id)
+    context = {'profile': profile}
+  return render(request, "myhome/about.html", context)
 
 # Contact
 def contact(request):
+  context = {}
+  if request.user.is_authenticated:
+    profile = Profile.objects.get(user=request.user.id)
+    context = {'profile': profile}
+    
   if request.method == "POST":
-    subject = request.POST['name']
+    name = request.POST['name']
     from_email = request.POST['email']
-    email_message = request.POST['message']
+    message = request.POST['message']
+
+    email_message = "From: {} \n Email: {}\n Message: {}".format(name, from_email, message)
+    subject = "Message from {}".format(name)
 
     email = EmailMessage(
       subject, 
@@ -54,15 +64,9 @@ def contact(request):
       )
     email.send()
 
-    messages.add_message(request, messages.SUCCESS, 'we will get back to you as soon as possible,')
-    return HttpResponseRedirect('/whitebricks/contact/')
-  
+    return JsonResponse({"status": "success"})
   else:
-    return render(request, 'myhome/contact.html')
-
-# Portfolio
-def portfolio(request):
-  return render(request, 'myhome/portfolio.html')
+    return render(request, 'myhome/contact.html', context)
 
 # Register
 def Register(request):
@@ -71,19 +75,21 @@ def Register(request):
     lastname = request.POST["last_name"]
     username = request.POST["username"]
     email = request.POST["email"]
+    con_number = request.POST["con_number"]
     password1 = request.POST["password1"]
     password2 = request.POST["password2"]
 
     if User.objects.filter(username=username).exists():
-      messages.add_message(request, messages.ERROR, 'This username is already taken, Please enter another one')
-      return HttpResponse("username is already exist")
+      return JsonResponse({'status': 'used_username'})
     elif User.objects.filter(email=email).exists():
-      messages.add_message(request, messages.ERROR, 'This username is already taken, Please enter another one')
-      return HttpResponse("email already exist")
+      return JsonResponse({'status': 'used_email'})
     else:
       user = User.objects.create_user(username=username, email=email, password=password1, first_name=firstname, last_name=lastname)
       user.is_active = False
       user.save()
+
+      profile = Profile(user=user, contact_number=con_number)
+      profile.save()
       #Activation email
       current_site = get_current_site(request)
       mail_subject ='Activate your account'
@@ -99,12 +105,12 @@ def Register(request):
         )
       email.send()
 
-      messages.add_message(request, messages.SUCCESS, 'Succesfully created your account,Please Check your email and activate the account')
-      return HttpResponse('account created')
+      return JsonResponse({'status': 'success'})
 
   else:
       return render(request, "myhome/register.html")
 
+#account activation
 def activate(request, uidb64, token):
   try:
     uid = force_text(urlsafe_base64_decode(uidb64))
@@ -137,15 +143,15 @@ def loginPage(request):
          
           if user.is_active:
             login(request, user)
-            messages.add_message(request, messages.SUCCESS, 'You are successfully logined')
+            messages.add_message(request, messages.SUCCESS, 'You are Successfully Logined')
             return HttpResponseRedirect('/whitebricks/home/')
          
           else:
-            messages.add_message(request, messages.ERROR, 'Sorry, Incorrect username or password. Please enter valid username and password.')
-            return HttpResponse("Your account is not active")
+            messages.add_message(request, messages.ERROR, 'Sorry, Incorrect Username or Password. Try Agin')
+            return HttpResponseRedirect('/whitebricks/login/')
         else:
-          messages.add_message(request, messages.ERROR, 'Sorry, Incorrect username or password. Please enter valid username and password.')
-          return HttpResponse('The account does not exist')
+          messages.add_message(request, messages.ERROR, 'Sorry, Incorrect username or password. Try Again')
+          return HttpResponseRedirect('/whitebricks/login/')
       
     else:
       return render(request, "myhome/login.html")
@@ -153,13 +159,133 @@ def loginPage(request):
 #logout
 def logingout(request):
   logout(request)
-  messages.add_message(request, messages.SUCCESS, 'Successfully logout')
+  messages.add_message(request, messages.SUCCESS, 'Successfully Logout')
   return HttpResponseRedirect('/whitebricks/home/')
 
-def reset_email(request):
-  return render(request, 'myhome/email_sent_done.html')
+#change password
+@login_required(login_url='/whitebricks/login/')
+def change_password(request):
+  context = {}
+  if request.user.is_authenticated:
+    profile = Profile.objects.get(user=request.user.id)
+    context = {'profile': profile}
+
+  if request.method == 'POST':
+    old_password = request.POST['old_password']
+    new_password1 = request.POST['new_password1']
+    new_password2 = request.POST['new_password2']
+    
+    user = User.objects.get(id=request.user.id)
+    if user.check_password(old_password):
+      user.set_password(new_password1)
+      user.save()
+
+      mail_subject = 'Password Change Conformation'
+      message = "Hi, {} \n You've successfully changed your Whitebricks account password.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(request.user.first_name)
+      to_email = request.user.email
+      email = EmailMessage(
+        mail_subject, message, to=[to_email]
+      )
+      email.send()
+
+      login(request, user)
+      messages.add_message(request, messages.SUCCESS, 'Password Successfully Changed !')
+      return HttpResponseRedirect('/whitebricks/home/')
+    else:
+      messages.add_message(request, messages.ERROR, 'Incorrect Current Password')
+      return HttpResponseRedirect('/whitebricks/change_password')
+    
+  else:
+    return render(request, 'myhome/password_change_form.html', context)
+
+#forgot password
+def forgot_password(request):
+  if request.method == "POST":
+    username = request.POST['u_name']
+    new_pasword = request.POST['new_pass']
+
+    user = User.objects.get(username=username)
+    user.set_password(new_pasword)
+    user.save()
+    login(request, user)
+    messages.add_message(request, messages.SUCCESS, 'Password Successfully Changed !')
+    return HttpResponseRedirect('/whitebricks/home/')
+  else:
+    return render(request, 'myhome/forgot_password.html')
+
+def reset_password(request):
+  username = request.GET.get('u_name')
+  try:
+    user = User.objects.get(username=username)
+    otp = random.randint(1000, 9999)
+    #profile = Profile.objects.get(user=user)
+    #profile.verify_otp = otp
+    #profile.save()
+    message = "Dear {} \n {} is your One Time Password(OTP). Do not share it with other \n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(user.first_name, otp)
+    subject = "Password Reset Verification"
+    
+    try:
+      email = EmailMessage(subject, message, to=[user.email])
+      email.send()
+      return JsonResponse({"status":"sent", "email":user.email, "rotp":otp})
+    except:
+      return JsonResponse({"status":"error", "email":user.email})
+  
+  except:
+    return JsonResponse({"status":"failed"}) 
+  
+#profile settings
+@login_required(login_url='/whitebricks/login/')
+def edit_profile(request):
+  if request.method == 'POST':
+    profile_form = ProfileForm(request.POST, request.FILES)
+
+    if profile_form.is_valid():
+
+      user_objects = User.objects.get(id=request.user.id)
+      user_objects.first_name = profile_form.cleaned_data['first_name']
+      user_objects.last_name = profile_form.cleaned_data['last_name']
+      user_objects.email = profile_form.cleaned_data['email'] 
+      
+      user_objects.save()
+
+      #if Profile.objects.get(user=request.user.id):
+        #profile_objects = Profile.objects.get(user=request.user.id)
+      #else:
+      profile_objects = Profile.objects.get(user=request.user.id)
+      profile_objects.contact_number = profile_form.cleaned_data['contact_number']
+      profile_objects.gender = profile_form.cleaned_data['gender']
+      profile_objects.occupation = profile_form.cleaned_data['occupation']
+      profile_objects.address = profile_form.cleaned_data['address']
+      profile_objects.about = profile_form.cleaned_data['about']
+      profile_objects.profile_pic = profile_form.cleaned_data['profile_pic']
+      profile_objects.user = request.user
+
+      profile_objects.save()
+
+      return HttpResponseRedirect('/whitebricks/edit_profile')
+  else:
+    user_details = User.objects.get(id=request.user.id)
+    profile = Profile.objects.get(user=request.user)
+    #property_details = Property.objects.get(id=requested_property_id)
+    profile_form = ProfileForm(
+      initial={
+      "firt_name":user_details.first_name, "last_name":user_details.last_name, 
+      "email":user_details.email, "conact_number":profile.contact_number,
+      "gender":profile.gender,"occupation":profile.occupation,
+      "address":profile.address, "about":profile.about,
+      "profile_pic":profile.profile_pic,
+      })
+    context = {
+      'form':profile_form, 
+      'user':user_details, 
+      'profile':profile
+      }
+  return render(request, 'myhome/edit_profile.html', context)
+
   
   # Ad posting
+@login_required(login_url='/whitebricks/login/')
 def Adverticement(request):
   if request.method == 'POST':
     property_form = AccomodationForm(request.POST, request.FILES)
@@ -181,36 +307,67 @@ def Adverticement(request):
       messages.add_message(request, messages.SUCCESS, 'Successfully added your new property')
       return HttpResponseRedirect('/whitebricks/my_property/')
   else:
+    profile = Profile.objects.get(user=request.user.id)
     property_form = AccomodationForm(request.POST, request.FILES)
-  return render(request, 'myhome/myroom.html', {'form': property_form})
- 
- # view ads
-def Poster(request,requested_id):
-  poster_details = Property.objects.get(id=requested_id)
+    context = {
+      'profile': profile,
+      'form': property_form
+    }
+  return render(request, 'myhome/myroom.html', context)
 
-  myFilter = OrderFilter()
-
-  context = {"accomodation":poster_details}
-
-  return render(request, "myhome/Poster.html", context)
-  
+#search property  
 def search(request):
   qur = request.GET.get('search', None)
   if qur is not None:
-    accomodations = Property.objects.filter(Q(city__icontains=qur))
+    looking = Q(city__icontains=qur)
+    properties = Property.objects.filter(looking)
   else:
     accomodations = Property.objects.all()
-  #accomodations = [
-  #item for item in Property.objects.all() 
-  #if qur in item.city or qur in item.location
-  #]
-  return render(request, 'myhome/search.html', {'accomodations':accomodations})
- 
+    if request.user.is_authenticated:
+      profile = Profile.objects.get(user=request.user.id)
+      context = {'profile': profile}
+  context = {'properties': properties}
+  return render(request, 'myhome/search.html', context)
+
+def property_previw(request, requested_id):
+  property_id = request.GET.get('property')
+  property_details = Property.objects.get(id=requested_id)
+  context = {'property': property_details,}
+  return render(request, "myhome/property_detail_view.html", context)
+
+# View cont info:
+def contact_details(request):
+    #property_id = request.GET.get('id')
+    #print(property_id)
+  if request.user.is_authenticated:
+    property_details = Property.objects.all()
+    seraializer = PropertySerializer(property_details, many=True)
+    details = seraializer.data
+      #context = {'property': serializer.data}
+      #jsnor = json.dumps({'authenticated': True})
+    
+    return JsonResponse(details, safe=False )
+  else:
+    return JsonResponse({"authenticated": False})
+
 #property view
+def property_list(request):
+  profile = Profile.objects.get(user=request.user.id)
+  properties = Property.objects.values('types')
+  context = {
+    'profile':profile,
+    'properties': properties
+  }
+  return render(request, 'myhome/all_property.html', context)
+
 @login_required(login_url='/whitebricks/login/')
 def my_property(request):
+  profile = Profile.objects.get(user=request.user.id)
   properties = Property.objects.filter(owner=request.user)
-  context = { "properties":properties }
+  context = { 
+    'profile': profile,
+    'properties': properties 
+    }
   return render(request, 'myhome/property.html', context)
 
 # editing
@@ -234,15 +391,22 @@ def edit_property(request, requested_property_id):
       messages.add_message(request, messages.SUCCESS, 'Successfully updated your property details')
       return HttpResponseRedirect('/whitebricks/my_property/')
   else:
+    profile = Profile.objects.get(user=request.user.id)
     property_details = Property.objects.get(id=requested_property_id)
     property_form = AccomodationForm(
       initial={
-      "headline":property_details.headline, "city":property_details.city, 
-      "location":property_details.location, "facilities":property_details.facilites, 
-      "rent":property_details.rent, "email":property_details.email, 
-      "mobile":property_details.mobile, "images":property_details.images
+      "headline": property_details.headline, "city": property_details.city,
+      "address": property_details.address, "types": property_details.types,
+      "location": property_details.location, "facilities": property_details.facilites, 
+      "rent": property_details.rent, "email": property_details.email, 
+      "mobile":property_details.mobile, "images": property_details.images
       })
-  return render(request, 'property/edit.html', {'form':property_form, 'property':property_details})
+    context = {
+      'form': property_form,
+      'property': property_details,
+      'profile': profile
+    }
+  return render(request, 'property/edit.html', context)
 
 # Delete property
 def delete_property(request, requested_id):
@@ -250,61 +414,11 @@ def delete_property(request, requested_id):
   property_details.delete()
 
   messages.add_message(request, messages.WARNING, 'Your property is deleted permanently')
-  return HttpResponse('data deleted')
+  return HttpResponseRedirect('/whitebricks/my_property/')
 
-# View cont info:
-#@login_required(login_url='/whitebricks/login/') 
-def contact_details(request):
 
-    property_details = Property.objects.all()
-    seraializer = PropertySerializer(property_details, many=True)
-    data = seraializer.data
-    #context = {'property': serializer.data}
-    return JsonResponse(data, safe=False )
-
-# for api 
-@csrf_exempt
-@api_view(["POST"])
-@permission_classes((AllowAny))
-def login_api(request):
-  username = request.data.get("username")
-  password = request.data.get("password")
-  
-  if username is None or password is None:
-    return Response({'error': 'Please provide both username and password'},
-    status=HTTP_400_BAD_REQUEST)
-  user = authenticate(username=username, password=password)
-
-  if not user:
-    return Response({'error': 'Invalid Credentials'},
-    status=HTTP_404_NOT_FOUND)
-    token, _ = Token.objects.get_or_create(user=user)
-
-    return Response({'token': token.key},
-    status=HTTP_200_OK)
-
-# testing ajax
-def sample_ajax_view(request):
-  data = {"foo": "bar"}
-  return JsonResponse(data)
   
 
-def sample_view(request):
-	return render(request,"ajax_template.html")
-
-# trail for notifications
-def post_view(request):
-  qs = Property.objects.all()
-  user = request.user
-
-  context = {
-    "qs": qs,
-    "user": user
-  }
-  return render(request, 'posts/main.html', context)
-
-
-  #properties = Property.objects.get(id=request.POST.get('property_id'))
   '''
   properties = Property.objects.get(id=request.POST.get('id'))
   is_liked = False
@@ -351,30 +465,55 @@ def post_view(request):
   
   #properties = Property.objects.get(id=requested_id)
   #property = Property.objects.all()
-def like_post(request):
-  user = request.user 
-  if request.method == 'POST':
-    property_id = request.POST['property_id'] 
-    owner = request.POST['owner_id']
-    property_object = Property.objects.get(id=property_id)
-    owner_object = User.objects.all().get(username=owner)
-    notification =  user, "have intrested in your property" 
-    property_object.notify.add(user)
-    notifications = Notifications.objects.create(notification=notification, property=property_object, owner=owner_object)
 
-    notifications.save()
-    
-    return JsonResponse()
-    
-   
-    
+def notification(request):
+  if request.user.is_authenticated:
+    user = request.user 
+    if request.method == 'POST':
   
-   #return HttpResponseRedirect('/whitebricks/search/')  
-'''
-    notification_object = Notifications()
-    notification_object.notification = user, 'have intrested in your',property
-    notification_object.person = user
-    properties.notify.add(property_object.owner)
+      property_id = request.POST['property'] 
+      owner = request.POST['owner_id']
+      print(property_id)
+      print(owner)
+      property_object = Property.objects.get(id=property_id)
+      owner_object = User.objects.all().get(username=owner)
+      notification = "Hi {}, {} \n have intrested in your property '{}'".format(property_object.owner, user.first_name, property_object.headline) 
+      property_object.notify.add(user)
+      notifications = Notifications.objects.create(notification=notification, property=property_object, owner=owner_object)
 
-    notification_object.save()'''
-   
+      notifications.save()
+      return JsonResponse({"msg":"success", "authenticated": True})
+  else:
+    return JsonResponse({"authenticated": False})
+
+#notification view
+def view_notification(request):
+  profile = Profile.objects.get(user=request.user.id)
+  notification = Notifications.objects.filter(owner=request.user.id)
+  context = {
+    'profile': profile,
+    'notifications':notification
+  }
+  return render(request, 'myhome/notification.html', context)
+
+#delete notifications
+def delete_notification(request):
+  notifications = Notifications.objects.filter(owner=request.user.id)
+  notifications.delete()
+  return HttpResponseRedirect('/whitebricks/veiw_notification')
+  
+#new notification indicator
+'''
+def notification_upadate(request):
+  flag = request.GET.get('flag', None)
+  target = request.GET('target', 'box')
+  last_notification = int(flag) if flag.isdigit() else None
+
+  if last_notification:
+    new_notifications = request.user.notifications.filter(
+      id=last_notification).active().prefetch()
+
+    notification_list = []
+    for notify in new_notifications:
+      notification = notify.as_json()'''
+      

@@ -1,0 +1,204 @@
+{% extends 'formbase.html' %}
+{% load static %}
+{% block content %}
+<style>
+.footerlinks {
+    color: #ffffff;
+    text-decoration: none !important;
+}
+
+.footerlinks:hover {
+        color: #ffd800;
+    }
+
+#footer1 {
+    background: #762b00;
+}
+
+#footer2 {
+    background: #531f00;
+}
+</style>
+		<!-- banner-text -->
+		<div class="banner-w3ltext about-w3bnr">
+			<div class="container">
+				<h1 class="text-white text-center">
+					<a href="{% url 'home' %}">Home</a> / Profile</h1>
+			</div>
+		</div>
+		<!-- //banner-text -->
+	</div>
+	<!-- //banner -->
+
+	<!-- gallery -->
+	<section class="wthree-row w3-gallery py-5">
+		<div class="container-fluid py-xl-5 py-lg-3">
+		
+			<div class="text-center mb-lg-5 mb-4">
+				<h3 class="tittle mb-2">Profile</h3>
+				<p>See your property</p>
+			</div>
+			{% if messages %}
+    		{% for message in messages %}
+    		<div  {% if messages.tags %} class="alert {{ messages.tags }} alert-dismissible fade show" id="msg" role="alert" {% endif %}>
+				{{ message }}
+    		</div>
+    		{% endfor %}
+			{% endif %} 
+			<ul class="portfolio-categ filter mb-5 pb-4 text-center border-bottom">
+				<li class="port-filter all active">
+					<a href="{% url 'new_property' %}">Add property</a>
+				</li>
+				<li class="cat-item-1">
+					<a href="#" title="Category 1">Bedroom</a>
+				</li>
+				<li class="cat-item-2">
+					<a href="#" title="Category 2">Bathroom</a>
+				</li>
+				<li class="cat-item-3">
+					<a href="#" title="Category 3">Kitchen</a>
+				</li>
+				<li class="cat-item-4">
+					<a href="#" title="Category 4">Living Room</a>
+				</li>
+				<li class="cat-item-5">
+					<a href="#" title="Category 5">Office</a>
+				</li>
+				<li class="cat-item-6">
+					<a href="#" title="Category 6">Pool</a>
+				</li>
+			</ul>
+
+			
+   <div class="container-fluid">
+      <div class="row">
+         <div class="col-md-10 ml-5 ">
+            <div class="card">
+               <div class="card-body">
+                  <div class="row">
+                     <div class="col">
+                        <center>
+                           <img width="100px" src="imgs/generaluser.png"/>
+                        </center>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col">
+                        <center>
+                           <h4>Your Profile</h4>
+                           <span>Account Status - </span>
+                           <Label class="badge badge-pill badge-info" ID="Label1" runat="server" Text="Your status"><Label>
+                        </center>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col">
+                        <hr>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <label>Full Name</label>
+                        <div class="form-group">
+                           <input type="text" class="form-control" ID="TextBox1" runat="server" placeholder="Full Name">
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <label>Date of Birth</label>
+                        <div class="form-group">
+                           <input type="password" class="form-control" ID="TextBox2" runat="server" placeholder="Password" TextMode="Date">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-6">
+                        <label>Contact No</label>
+                        <div class="form-group">
+                           <input type="number" class="form-control" ID="TextBox3" runat="server" placeholder="Contact No" TextMode="Number">
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <label>Email ID</label>
+                        <div class="form-group">
+                           <input type="email" class="form-control" ID="TextBox4" runat="server" placeholder="Email ID" TextMode="Email">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-4">
+                        <label>State</label>
+                        <div class="form-group">
+                           <select class="form-control" ID="DropDownList1" runat="server">
+							   <option>hbh</option>
+							   <option>afds</option>
+                              </select>
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <label>City</label>
+                        <div class="form-group">
+                           <input type="text" class="form-control" ID="TextBox6" runat="server" placeholder="City">
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <label>Pincode</label>
+                        <div class="form-group">
+                           <input type="number" class="form-control" ID="TextBox7" runat="server" placeholder="Pincode" TextMode="Number">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col">
+                        <label>Full Address</label>
+                        <div class="form-group">
+                           <textarea  class="form-control" ID="TextBox5" runat="server" placeholder="Full Address" TextMode="MultiLine" Rows="2"></textarea>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col">
+                        <center>
+                           <span class="badge badge-pill badge-info">Login Credentials</span>
+                        </center>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-4">
+                        <label>User ID</label>
+                        <div class="form-group">
+                           <input type="number" class="form-control" ID="TextBox8" runat="server" placeholder="User ID" ReadOnly="True">
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <label>Old Password</label>
+                        <div class="form-group">
+                           <input type="email" class="form-control" ID="TextBox9" runat="server" placeholder="Email ID" TextMode="Password" ReadOnly="True">
+                        </div>
+                     </div>
+                     <div class="col-md-4">
+                        <label>New Password</label>
+                        <div class="form-group">
+                           <input type="email" class="form-control" ID="TextBox10" runat="server" placeholder="Email ID" TextMode="Password">
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-8 mx-auto">
+                        <center>
+                           <div class="form-group">
+                              <button class="btn btn-primary btn-block btn-lg" ID="Button1" runat="server" Text="Update" >butt1</button>
+                           </div>
+                        </center>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <a href="#"><< Back to Home</a><br><br>
+         </div>
+         
+         </div>
+      </div>
+   </div>
+
+
+{% endblock %}			

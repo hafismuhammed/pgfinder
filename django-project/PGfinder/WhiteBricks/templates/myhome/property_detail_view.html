@@ -1,0 +1,183 @@
+{% extends 'formbase.html' %}
+{% load static %}
+{% block content %}
+
+<!-- banner-text -->
+<div class="banner-w3ltext about-w3bnr">
+	<div class="container">
+		<h1 class="text-white text-center">
+			<a href="{% url 'home' %}" class="img-fluid">Home</a> / Properties</h1>
+	</div>
+</div>
+<!-- //banner-text -->
+</div>
+<!-- //banner -->
+<!-- search result -->
+<section class="wthree-row w3-gallery py-5">
+	<div class="container-fluid py-xl-5 py-lg-3">
+		<div class="text-center mb-lg-5 mb-4">
+			<h3 class="tittle mb-2">Properties</h3>
+			<p>See your choice</p>
+        </div>
+        {% if property %}
+        <div class="container">
+                <div class="row">
+                        <div class="mx-auto">
+                                <div class="modal-body">
+                                <div class="p-5 pro">
+                                        <div class="row">
+                                                        <img src="{{ property.images.url }}" class="img-fluid ProImg">
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+               <!-- <div class="mx-auto">-->
+                        <div class="modal-body">
+                        <div class="p-5 pro">
+                                <div class="row">
+                                        <div class="col-md-5">
+                                                <div class="label">Rent </div>
+                                                <h4>{{ property.rent }}</h4><hr>
+                                        </div>
+                                        <div class="col-md-7">
+                                                <div class="label">Security deposite</div>
+                                                <h4>{{ property.deposite }}</h4><hr>
+                                        </div>
+                                </div>
+
+                                <div class="row">
+                                        <div class="col-md-9">
+                                                <h4>{{ property.facilites }} for {{ property.rent }}, {{ property.city }}</h4>
+                                                <div class="label">Only for {{ property.types }}</div><hr>
+                                        </div>       
+                                </div>
+
+                                <div class="row py-2">
+                                        <h3>House Features</h3>
+                                </div>
+                                <div class="row">
+                                        <div class="col-md-6">
+                                                <i id="bed" class="fas fa-bed"></i>
+                                                <p>bedrooms</p><hr>
+                                        </div>
+                                        <div class="col-md-6">
+                                                <i id="bath" class="fas fa-bath"></i>
+                                                <p>bathrooms</p><hr>
+                                        </div>
+                                </div>
+                                <div class="row py-3">
+                                        <h3>Rent Details</h3>
+                                </div>
+                                <div class="row py-3">
+                                        <ul>
+                                        <li>
+                                           <strong>Pay security deposit & rent with easy EMIs at 0% interest rates</strong>
+                                        </li>
+                                        <li>
+                                           <strong>You can opt to book the entire house & live with your family, friends, or by yourself.</strong>
+                                        </li>
+                                        </ul>
+                                </div>
+                                <div class="row py-2">
+                                        <div class="col-md-6 text-left">
+                                                <h4>Monthly rent</h4>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                                <h4 class="text-right">{{ property.rent }}</h4>
+                                        </div>
+                                </div>
+                                <div class="row py-3">
+                                        <div class="col-md-6 text-left">
+                                                <h4>Security Deposite</h4>
+                                                <p>Fully refundable if vacated in original condition</p>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                                <h4 class="text-right">{{ property.deposite }}</h4>
+                                        </div>
+                                </div>
+                                <input type="hidden" name="id" value="{{ property.id }}" id="property_id" >
+                                <div class="row py-5">
+                                        <div class="col-md-6 text-left">
+                                        <h4>For more details & Booking </h4>
+                                        <div id="response"></div>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                        <form action="" method="post" id="notify_form" >
+                                                {% csrf_token %}
+                                                <input type="hidden" name="owner_id" value="{{ property.email }}" id="pro_email">
+                                                <input type="hidden" name="property" value="{{ property.mobile }}" id="pro_mobile">
+                                                <input type="hidden" name="owner_id" value="{{ property.owner }}" id="property" >
+                                                <input type="hidden" name="property" value="{{ property.id }}" id="property_id" >
+                                                <button type="button" id="request-btn" class="btn btn-primary">Contact info:</button>
+                                        </form>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+       <!-- </div>-->
+
+
+        {% endif %}
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#request-btn").click(function(){
+			
+		let id = $('#property_id').val();	
+            $.ajax({
+               url: "{% url 'contact_details' %}",
+               type: "GET",
+             //  data: $('#notify_form').serialize(),
+               dataType:"json",
+               success: function(result){
+
+                $.each(result, function() {
+		    $("#request-btn").hide()
+                    html = "<h6>Contact me" + "<br>" + "Email:" + this.email + "<br>" +"Mobile:" + this.mobile + "<hr>"
+                    $("#response").append(html)
+					$("#response").slideDown()
+                });
+            }
+        });
+        });
+    }); 
+
+$(document).ready(function(event){
+	$("#request-btn").click(function(event){
+		event.preventDefault();
+
+		$.ajax({
+			type:'POST',
+			url:"{% url 'notification' %}",
+			data:$('#notify_form').serialize(),
+		/*	data:{
+				owner: $("#request-btn").val(),
+				property: $("#property").val(),
+				csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoke]'),
+			},*/
+			dataType:'Json',
+			success:function(data){
+                                if(data.authenticated){
+                                        if(data.msg == "success"){
+                                                //console.log('notification sented')
+                                                alert('sent')
+                                        }
+                                }
+                                else{
+                                        window.location.href = "{% url 'login' %}"
+                                }
+			}
+
+		});
+	});
+});
+
+</script>
+
+        </div>
+        </div>
+        </div>
+</section>
+{% endblock %}

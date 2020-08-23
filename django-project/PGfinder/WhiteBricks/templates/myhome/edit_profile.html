@@ -1,0 +1,80 @@
+{% extends 'formbase.html' %}
+{% load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+<!-- banner-text -->
+<div class="banner-w3ltext about-w3bnr">
+	<div class="container">
+		<h1 class="text-white text-center">
+			<a href="{% url 'home' %}">Home</a> / Edit Profile</h1>
+	</div>
+</div>
+<!-- //banner-text -->
+</div>
+<!-- //banner -->
+<!-- adverticing-->
+<section class="wthree-row w3-gallery py-5">
+	<div class="container py-xl-5 py-lg-3">
+		<div class="text-center mb-lg-5 mb-4">
+			<h3 class="tittle mb-2">Edit Profile</h3>
+			<p>Edit your profile</p>
+		</div>
+		<div class="row contact-form py-3">
+			<!-- image block -->
+			<div class="col-lg-6 map text-center">
+				{% if profile or user %}
+			<!--	<img src="/media/{{ profile.profile_pic }}" alt=""  style="height:150px;width:150px;border-radius:50%" />
+				<h3>{{ user.first_name }} {{ user.last_name }}</h3><hr>
+				<h5 class="text-left">Email: <p>{{ user.email }}</p></h35>
+				<h5 class="text-left">Contact Number: <p>{{ profile.contact_number }}</p></h5>
+				<h5 class="text-left">Occupation:<p>{{ profile.occupation }}</p></h5>
+				<h5 class="text-left">Address: <p>{{ profile.address }}</p></h5>
+				<h5 class="text-left">About: <p>{{ profile.about }}</p></h5>
+				-->
+				<div class="card pro">
+					<div class="card-body">
+						<img src="/media/{{ profile.profile_pic }}" alt="" class="img-fluid rounded-circle w-60 mb-10" style="height: 400px;">
+						<h3>{{ user.first_name }} {{ user.last_name }}</h3>
+						
+						<span><i class="fas fa-at"></i>{{ user.email }}</span><br>
+						<span><i class="fas fa-phone-square"></i>{{ profile.contact_number }}</span><br>
+						<span><i class="far fa-address-card"></i>{{ profile.address }}</span><br>
+						<strong>About: </strong>
+						<p>{{ profile.about }}}
+						</p>
+						<div class="d-flex flex-row justify-content-center">
+							<div calss="p-4">
+								<i class="fa fa-facebook"></i>
+							</div>
+							<div calss="p-4">
+								<i class="fa fa-facebook"></i>
+							</div>
+							<div calss="p-4">
+								<i class="fa fa-facebook"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% else %}
+				<img src="{% static 'myhome/images/profile.png' %}" alt=""  style="height:500px;width:500px;border-radius:50%" />
+				{% endif %}
+			</div>
+			<!-- //image block -->
+			<!-- form -->
+			<div class="col-lg-6 wthree-form-left mt-lg-0 mt-5">
+				<div class="contact-top1">
+					<form action="" method="post" enctype="multipart/form-data">
+						{% csrf_token %}
+							<div class="form-group">
+								{{ form|crispy }}
+								<div class="form-group">
+									<button type="submit" class="btn submit contact-submit form-control ">Update</button>	
+								</div>
+							</div>
+					</form>
+				</div>
+				</div>
+				</div>
+		</section>
+		<!--//adverticing-->
+{% endblock %}	

@@ -1,0 +1,40 @@
+
+
+	{% if accomodations %}	
+    {% for accomodation in accomodations %}
+    <form action="" method="post" id="notify_form" >
+        {% csrf_token %}
+    <input type="hidden" name="owner_id" value="{{ accomodation.owner }}" id="property" >
+    <input type="hidden" name="property" value="{{ accomodation.id }}" id="property_id" >
+    <button type="button" id="request-btn" class="btn btn-primary">Contact info:</button>
+    </form>
+    <div id="response"></div>
+    {% endfor %}
+{% endif %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>  
+$(document).ready(function(event){
+	$("#request-btn").click(function(event){
+		event.preventDefault();
+
+		$.ajax({
+			type:'POST',
+			url:"{% url 'notification' %}",
+			data:$('#notify_form').serialize(),
+		/*	data:{
+				owner: $("#request-btn").val(),
+				property: $("#property").val(),
+				csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoke]'),
+			},*/
+			dataType:'Json',
+			success:function(data){
+				if(data.msg == "success"){
+					alert('data submitted')
+				}
+			}
+
+		});
+	});
+});
+
+</script>

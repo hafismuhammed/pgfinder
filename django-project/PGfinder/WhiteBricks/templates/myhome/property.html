@@ -14,11 +14,11 @@
 
 	<!-- gallery -->
 	<section class="wthree-row w3-gallery py-5">
-		<div class="container py-xl-5 py-lg-3">
+		<div class="container-fluid py-xl-5 py-lg-3">
 			{% if properties %}
 			<div class="text-center mb-lg-5 mb-4">
 				<h3 class="tittle mb-2">My Property</h3>
-				<p>See your roperty</p>
+				<p>See your property</p>
 			</div>
 			{% if messages %}
     		{% for message in messages %}
@@ -51,10 +51,12 @@
 				</li>
 			</ul>
 		{% for property in properties %}
-		<div class="row">
+	<!--	<div class="row">
 			<div class="col-sm-2 col-md-2"></div>
 			<div class="col-sm-4 col-md-4">
-				<img  class="img-responsive" src="{{ property.images.url }}" style="width: 100%">
+				<div class="inner">
+				<img  class="img-fluid" src="{{ property.images.url }}" style="width: 100%">
+				</div>
 			</div>
 			<div class="col-sm-5 col-md-5">
 				<div class="caption">
@@ -73,13 +75,115 @@
 						</div>
 						<div>
 							<a href="{% url 'edit_property' property.id %}" class="btn btn-success">Edit</a>
-							<a href="{% url 'delete_property' property.id %}" class="btn btn-danger">Delete</a>
+						
+
+						<button type="button" class="log btn btn-danger" data-toggle="modal" data-target="#deleteBox">delete</button>
+						<div class="modal fade" id="deleteBox" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-header text-center">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<div class="px-4 mx-auto mw-100">
+											<h5 class="mb-4">Delete</h5>
+											<strong>The following property will be deleted permanenty.</strong>
+											<p class="pl-3">Property: {{ property.headline }}</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">CANCEL</button>
+											<a href="{% url 'delete_property' property.id %}" class="btn btn-danger">OK</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+								</div>
+							</div>
 						</div>
 					</div>
 			</div>
 		</div>
 	</div>
-		<hr>
+		<hr>-->
+		<div class="container">
+			<div class="row">
+				<div class="mx-auto">
+					<div class="modal-body">
+					<div class="p-5 pro">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="inner">
+									<div class="badge badge-secondary p">{{ property.types }}</div>
+									<img src="{{ property.images.url }}" class="img-fluid">
+								</div>
+							</div>
+							<div class="col-md-5">
+								<div class="caption">
+									<div>
+										<h4>{{ property.rent }}</h4>
+										<i class="far fa-thumbs-up"></i>
+										<span>Deposite: {{ property.deposite }}</span>
+									</div>
+									<div>
+										<h5>{{ property.headline }}, {{ property.location }}</h5>
+									</div>
+									<div>
+										<strong>Location: </strong>{{ property.city }}
+									</div>
+									<div>
+										<strong>Address: </strong>{{ property.address }}
+									</div>
+									<div>
+										<strong>Email: </strong>{{ property.email }}
+									</div>
+									<div>
+										<strong>Mobail: </strong>{{ property.mobile }}
+									</div>
+									<div>
+										{{property.facilites}}
+									</div>
+									<div id="response"></div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<a href="{% url 'edit_property' property.id %}" class="btn btn-success">Edit</a>
+						
+
+						<button type="button" class="log btn btn-danger" data-toggle="modal" data-target="#deleteBox">delete</button>
+						<div class="modal fade" id="deleteBox" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-header text-center">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									
+									<div class="modal-body">
+										<div class="px-4 mx-auto mw-100">
+											<h5 class="mb-4">Delete</h5>
+											<strong>The following property will be deleted permanenty.</strong>
+											<p class="pl-3">Property: {{ property.headline }}</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">CANCEL</button>
+											<a href="{% url 'delete_property' property.id %}" class="btn btn-danger">OK</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
 		{% endfor %}
 		{% else %}
 		<div class="text-center mb-lg-5 mb-4">
@@ -91,7 +195,7 @@
 			<p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
 			<hr class="my-4">
 			<p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-			<a class="btn btn-primary btn-lg" href="{% url 'new_property' %}" role="button">Learn more</a>
+			<a class="btn btn-primary btn-lg" href="{% url 'new_property' %}" role="button">Add Property</a>
 		  </div>
 		{% endif %}
 			<!--end property-area -->
@@ -99,6 +203,13 @@
 		<!-- //property container -->
 	</section>
 	<!-- //gallery -->
+	<script>
+		setTimeout(function(){
+		if ($('#msg').length > 0) {
+			$('#msg').remove();
+		}
+		}, 2000)
+	</script>
 	
 
 	{% endblock %}

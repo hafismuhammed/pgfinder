@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% if user.is_superuser %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mt-4">
+                <div class="jumbotron">
+                    <h1>Sorry Mr./Miss {{user.username}} You are not allowed Here</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- left side menu -->
+        <div class="col-md-2 bg-dark py-5">
+            <nav class="navbar navbar-dark">
+                <a href="" class="navbar-brand">
+                <div class="text-center">
+                    {% if data.profile_pic %}
+                    <img src="/media/{{data.profile_pic}}" style="height:50px;width:50px;border-radius:50%">
+                    {% else %}
+                    <img src="{% static 'myhome/images/profile.png' %}" style="height:50px;width:50px;border-radius:50%">
+                    {% endif %}
+                </div>
+                    <p>{{user.username}}</p>
+                </a>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="" class="nav-link">View Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Edit Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Change Password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">My Cart</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Order History</a>
+                    </li>
+                    {% if user.is_staff %}
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Add Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">My Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="" class="nav-link">Send Email</a>
+                    </li>
+                   
+                    {% endif %}
+                    <li class="nav-item">
+                        <a href="{" class="nav-link">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- right side menu -->
+        <div class="col-md-10">
+            {% block dashboard %}
+
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,185 @@
+{% extends 'formbase.html' %}
+{% load static %}
+{% block content %}
+
+
+<!-- banner-text -->
+<div class="banner-w3ltext about-w3bnr">
+	<div class="container">
+		<h1 class="text-white text-center">
+			<a href="{% url 'home' %}">Home</a> / Properties</h1>
+	</div>
+</div>
+<!-- //banner-text -->
+</div>
+<!-- //banner -->
+<!-- all propery listing -->
+<section class="wthree-row w3-gallery py-5">
+	<div class="container-fluid py-xl-5 py-lg-3">
+		<div class="text-center mb-lg-5 mb-4">
+			<h3 class="tittle mb-2">Properties</h3>
+			<p>See your choice</p>
+		</div>
+		<ul class="portfolio-categ filter mb-5 pb-4 text-center border-bottom">
+			<li>
+				<form action="{% url 'search' %}" class="form-inline">
+					<input class="form-control mr-sm-2" type="search" name="search" size="80" placeholder="Search..." aria-label="Search">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				  </form>
+			</li>
+		</ul>
+	{% if properties %}	
+	{% for property in properties %}
+<!--	<div class="row">
+		<div class="col-sm-2 col-md-2"></div>
+		<div class="col-sm-4 col-md-4">
+			<img src="{{ property.images.url }}" class="img-responsive" style="width:100%">
+		</div>
+		<div class="col-sm-5 col-md-5">
+			<div class="caption">
+				<h3>{{ property.headline }}</h3>
+				<div>
+					<strong>City :</strong>{{ property.city }}
+				</div>
+				<div>
+					<strong>Location :</strong>{{ property.location }}
+				</div>
+				<div>
+					<strong>Facilities :</strong>{{ property.facilites }}
+				</div>
+				<div>
+					<strong>Rent :</strong>{{ property.rent }}
+				</div>
+				
+				<form action="{% url 'notification'  %}" method="post" id="notify_form" >
+					{% csrf_token %}
+				<input type="hidden" name="owner_id" value="{{ accomodation.owner }}">
+				<button type="buttonsn" id="request-btn" name="property_id" value="{{ accomodation.id }}" class="btn btn-primary">Contact info:</button>
+				</form>
+				<div id="response"></div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	
+   
+		<div class="card shadow" style="box-shadow:0px 0px 10px #000000;">
+			<div class="row">
+			<div class="col-md-5">
+			<div class="inner">
+			<img class="card-img" src="{{ property.images.url }}" alt="Card image cap">
+			</div>
+			</div>
+			<div class="col-md-7">
+            <div class="card-body text-center">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+			  <a href="#" class="btn btn-primary">Go somewhere</a>
+			  </div>
+            </div>
+          </div>
+		-->
+		<div class="container">
+		<div class="row">
+			<div class="mx-auto">
+				<div class="modal-body" >
+				<div class=" p-5" style="box-shadow:0px 0px 10px #000000;">
+				<div class="row">
+					<div class="col-sm-4 col-md-4" >
+						<img src="{{ property.images.url }}" class="img-fluid" style="width:500px; height:200px;">
+					</div>
+					<div class="col-sm-5 col-md-5">
+						<div class="caption">
+							
+							<div>
+							  <h4> Rs.11000</h4>
+							  <i class="far fa-thumbs-up"></i><span>Deposite: 2 month rent</span>
+							</div>
+							<div>
+								<h5>Fully furnished 2 BHK for family, Banglore</h5>
+							</div>
+							<div>
+								<strong>Location :</strong>Banglore
+
+							</div>
+						</div>
+					</div>
+							<div class="col-md-3 col-sm-3">
+							<button type="button" id="request-btn"  class="btn btn-primary">Contact info:</button>
+							</div>
+							<div id="response"></div>
+						
+						</div>
+						</div>
+						</div>
+						</div>
+		
+	{% endfor %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	{% if user.is_authenticated %}
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $("#request-btn").click(function(){
+			
+			
+            $.ajax({
+               url: "{% url 'contact_details' %}",
+               type: "GET",
+               dataType:"json",
+               success: function(result){
+
+                $.each(result, function() {
+					$("#request-btn").hide()
+                    html =  "Email:" + this.email + "<br>" +"Mobile:" + this.mobile + "<hr>"
+                    $("#response").append(html)
+                });
+            }
+        });
+        });
+    }); 
+
+$(document).ready(function(e){
+	$(document).on('submit','#request-btn',function(e){
+		e.preventDefault();
+		var property_id = $this.attr('value');
+		var owner_id = $this.attr('value');
+
+		$.ajax({
+			type:'POST',
+			url:"{% url 'notification' %}",
+			data:$('#notify_form').serialize(),
+			dataType:'Json',
+			success:function(data){
+				alert('success')
+				if(msg == "success"){
+					alert('data submitted')
+				}
+			}
+
+		});
+	});
+});
+
+</script>
+{% else %}
+<script>
+	window.location = "/whitebricks/login/"
+</script>
+{% endif %}
+    {% else %}
+    <div class="jumbotron">
+		<h1 class="display-4 text-center">Sorry, Not Fount !!! </h1>
+		<p class="lead text-center">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+		<hr class="my-4">
+		<p class="text-center">It uses utility classes for typography and spacing to space content out within the larger container.</p>
+	  </div>
+	{% endif %}
+</div>
+</div>
+
+<!-- //search result container -->
+</section>
+<!-- //search result -->
+   
+{% endblock %}

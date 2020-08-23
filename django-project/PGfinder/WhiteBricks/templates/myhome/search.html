@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 
+
 <!-- banner-text -->
 <div class="banner-w3ltext about-w3bnr">
 	<div class="container">
@@ -14,115 +15,116 @@
 <!-- //banner -->
 <!-- search result -->
 <section class="wthree-row w3-gallery py-5">
-	<div class="container py-xl-5 py-lg-3">
+	<div class="container-fluid py-xl-5 py-lg-3">
 		<div class="text-center mb-lg-5 mb-4">
 			<h3 class="tittle mb-2">Properties</h3>
 			<p>See your choice</p>
 		</div>
+		<ul class="portfolio-categ filter mb-5 pb-4 text-center border-bottom">
+			<li>
+				<form action="" class="form-inline">
+					<input class="form-control mr-sm-2" type="search" name="search" size="80" placeholder="Search..." aria-label="Search">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				  </form>
+			</li>
+		</ul>
 
-	{% if accomodations %}	
-	{% for accomodation in accomodations %}
+	{% if properties %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+	{% for property in properties %}
+	<div class="container">
 	<div class="row">
-		<div class="col-sm-2 col-md-2"></div>
-		<div class="col-sm-4 col-md-4">
-			<img src="{{accomodation.images.url}}" class="img-responsive" style="width:100%">
-		</div>
-		<div class="col-sm-5 col-md-5">
-			<div class="caption">
-				<h3>{{ accomodation.headline }}</h3>
-				<div>
-					{{ accomodation.city }}
+		<div class="mx-auto">
+			<div class="modal-body">
+			<div class="p-5 pro">
+				<div class="row">
+					<div class="col-md-4">
+						<div class="inner">
+							<div class="badge badge-secondary p">{{ property.types }}</div>
+						<img src="{{ property.images.url }}" class="img-fluid">
+						</div>
+					</div>
+					<div class="col-md-5">
+						<div class="caption">
+							<div>
+								<h4><a href="{% url 'property_details' property.id %}" class="detail" target="_blank">{{ property.rent }}</a></h4>
+							</div>
+							<i class="far fa-thumbs-up"></i><span>Deposite: {{ property.deposite }}</span>
+							<div>
+								<h5><a href="{% url 'property_details' property.id %}" class="detail" target="_blank">{{ property.headline }}, {{ property.location }}</a></h5>
+							</div>
+							<div>
+								<strong>Location: </strong>{{ property.city }}
+							</div>
+							<div id="response"></div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<a href="{% url 'property_details' property.id %}" target="_blank" class="btn btn-primary">details</a>
+					</div>
 				</div>
-				<div>
-					{{ accomodation.location }}
-				</div>
-				<div>
-					{{ accomodation.facilites }}
-				</div>
-				<div>
-					{{ accomodation.rent }}
-				</div>
-				<div>
-					{{ accomodation.owner }}
-				</div>
-				<div>
-					{{ accomodation.id }}
-				</div>
-				<form action="{% url 'like_post'  %}" method="post" id="notify_form" >
-					{% csrf_token %}
-				<input type="hidden" name="owner_id" value="{{ accomodation.owner }}">
-				<button id="request-btn" name="property_id" value="{{ accomodation.id }}" class="btn btn-primary">Contact info:</button>
-				</form>
-				<div id=response></div>
 			</div>
 		</div>
 	</div>
-	<hr>
 	{% endfor %}
-	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+	
 <script type="text/javascript">
 
     $(document).ready(function(){
         $("#request-btn").click(function(){
+			
+		let id = $('#property_id').val();	
             $.ajax({
-               url: "/whitebricks/contact_details/",
+               url: "{% url 'contact_details' %}",
                type: "GET",
                dataType:"json",
                success: function(result){
 
                 $.each(result, function() {
-                    html = "Email:" + this.email + "<br>" +"Mobile:" + this.mobile + "<hr>"
+					$("#request-btn").hide()
+                    html =  "Email:" + this.email + "<br>" +"Mobile:" + this.mobile + "<hr>"
                     $("#response").append(html)
+					$("#response").slideDown()
                 });
             }
         });
         });
     }); 
 
-$(document).ready(function(e){
-	$(document).on('submit','#request-btn',function(e){
-		e.preventDefault();
-		var property_id = $this.attr('value');
-		var owner_id = $this.attr('value');
+$(document).ready(function(event){
+	$("#request-btn").click(function(event){
+		event.preventDefault();
 
 		$.ajax({
 			type:'POST',
-			url:"{% url 'like_post' %}",
+			url:"{% url 'notification' %}",
 			data:$('#notify_form').serialize(),
+		/*	data:{
+				owner: $("#request-btn").val(),
+				property: $("#property").val(),
+				csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoke]'),
+			},*/
 			dataType:'Json',
-			success:function(){
-				console.log('success')
+			success:function(data){
+				if(data.msg == "success"){
+					console.log('notification sented')
+				}
 			}
 
 		});
 	});
 });
-/*
-	$(document).ready(function(event){
-		$(document).on('click', '#like', function(event){
-			event.preventDefault();
-			var pk = $(this).attr('value');
-			$.ajax({
-				type: "POST",
-				url: "{% url 'like_post' %}",
-				data: {'id':pk, "csrfmiddlewaretoken": '{{ csrf_token }}'},
-				dataType: "json",
-				success: function(response){
-					$('#like_section').html(response['form'])
-				},
-				error: function(rs, e){
-					console.log(rs.responseText);
-				}
-			});
-		});
-	});*/
+
 </script>
     {% else %}
-    <h1>Not Found</h1>
+    <div class="jumbotron">
+		<h1 class="display-4 text-center">Sorry, Not Fount !!! </h1>
+		<p class="lead text-center">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+		<hr class="my-4">
+		<p class="text-center">It uses utility classes for typography and spacing to space content out within the larger container.</p>
+	  </div>
 	{% endif %}
-	<!--end portfolio-area -->
+</div>
 </div>
 <!-- //search result container -->
 </section>

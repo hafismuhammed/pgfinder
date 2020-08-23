@@ -1,6 +1,7 @@
 {% extends 'formbase.html' %}
 {% load static %}
 {% block content %}
+{% load crispy_forms_tags %}
 
 <!-- banner-text -->
 <div class="banner-w3ltext about-w3bnr">
@@ -20,15 +21,47 @@
 			<p>See your roperty</p>
 		</div>
 		<div class="row contact-form py-3">
-			<div class="col-lg-6 map text-center">
-				<img src="{% static 'myhome/image/house2.jpg' %}" alt="" class="img-fluid" />
+			<div class="col-lg-6  text-center">
+				<img src="{% static 'myhome/images/house.jpg' %}" alt="" class="img-fluid" />
+				<div class="text-left py-3">
+					<h3>How WhiteBricks different ?</h3>
+					<p>Monthly more than 5 lakh people visit WhiteBricks in search of houses on rent</p>
+					
+					<div class="row py-5">
+						<div class="col-md-4 text-center secure">
+							<i class="fas fa-shield-alt"></i>
+						</div>
+						<div class="col-md-8">
+							<h4>Property Security</h4>
+							<p>We ensure to keep your house in good condition</p>
+						</div>
+					</div>
+					<div class="row py-5">
+					<div class="col-md-4 text-center time">
+						<i class="fas fa-hourglass-start"></i>
+					</div>
+					<div class="col-md-8">
+						<h4>Rent On Time</h4>
+						<p>We guarantee rent on time every month</p>
+					</div>
+					</div>
+					
+					<div class="row py-5">
+					<div class="col-md-4 text-center papper">
+						<i class="far fa-sticky-note"></i>
+					</div>
+					<div class="col-md-8">
+						<h4>Zero Paperwork</h4>
+						<p>We do the paperwork for you like agreement creation</p>
+					</div>
+					</div>
+				</div>
 			</div>
 			<!-- form -->
 			<div class="col-lg-6 wthree-form-left mt-lg-0 mt-5">
 				<div class="contact-top1">
 					<form action="{% url 'new_property' %}" method="post" enctype="multipart/form-data">
 						{% csrf_token %}
-						{% load crispy_forms_tags %}
 							<div class="form-group">
 								{{ form|crispy }}
 								<div class="form-group">

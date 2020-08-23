@@ -1,4 +1,9 @@
 <h2>Welcome  {{ subject }}</h2>
- <p>Your account is activated Now</p>
- <br>
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Welcome  {{ subject }}</h1>
+    <p class="lead text-center" >Thank you for email conformation.Now you can login your account</p>
+    <hr class="my-4">
+    <p class="text-center">It uses utility classes for typography and spacing to space content out within the larger container.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'home' %}" role="button">Back to Home</a>
+  </div>
  <a href="{% url 'home' %}">Home</a>

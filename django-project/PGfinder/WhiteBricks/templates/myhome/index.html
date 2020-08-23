@@ -3,11 +3,12 @@
 <html lang="zxx">
 
 <head>
+	
 	<title>WhiteBricks Real Estates Category Bootstrap Responsive website Template | Home :: WhiteBricks</title>
 	<!-- Meta tag Keywords -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="UTF-8" />
-	<meta name="keywords" content="District Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design"
+	<meta name="keywords" content="WhiteBricks web , Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design"
 	/>
 	<script>
 		addEventListener("load", function () {
@@ -25,6 +26,7 @@
 	<link rel="stylesheet" href="{% static 'myhome/css/bootstrap.css' %}">
 	<!-- Bootstrap-Core-CSS -->
 	<link rel="stylesheet" href="{% static 'myhome/css/style.css' %}" type="text/css" media="all" />
+	<link href="{% static 'myhome/css/extra.css' %}" rel="stylesheet" type="text/css">
 	<!-- Style-CSS -->
 	<link rel="stylesheet" href="{% static 'myhome/css/fontawesome-all.css' %}">
 	<!-- Font-Awesome-Icons-CSS -->
@@ -59,7 +61,7 @@
 						<div class="col-xl-5 col-lg-6 header_right text-center mt-lg-0 mt-2">
 							<div class="row">
 								<!-- social icons -->
-								<div class="col-4 w3social-icons">
+								<div class="col-3 w3social-icons">
 									<ul>
 										<li>
 											<a href="#" class="rounded-circle">
@@ -80,12 +82,25 @@
 								</div>
 								<!-- //social icons -->
 								{% if user.is_authenticated %}
-								<div class="col-4 header-loginw3ls text-lg-right text-center">
-									<a href="{% url 'logout' %}" class="log" >
-										<i class="fas fa-user mr-2"></i> logout</a>
+								<div class="col-3 header-loginw3ls text-lg-right text-center">
+									<a href="{% url 'logout' %}" class="log">
+										<i class="fas fa-sign-out-alt mr-2"></i> logout</a>
+								</div>
+								<div class="col-2 header-loginw3ls text-lg-right text-center">
+									<a href="{% url 'view_notification' %}" id="tooltip">
+										<i class="far fa-bell"></i>
+										<span class="tooltiptext">Notification</span>
+									</a>
 								</div>
 								<div class="col-4 header-loginw3ls">
-									<p>hi, {{user.first_name}}</p>
+									<a href="#" class="log" data-toggle="modal" data-target="#exampleModalCenter2">
+									    {% if profile.profile_pic %}
+										<span><img src="/media/{{ profile.profile_pic }}" alt=""  style="height:30px;width:30px;border-radius:50%" />
+										hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
+										{% else %}	
+										<span><img src="{% static 'myhome/images/profile.png' %}" style="height:30px;width:30px;border-radius:50%"></span>
+										 hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
+										 {% endif %}
 								</div>
 								{% else %}
 								<div class="col-4 header-loginw3ls text-lg-right text-center">
@@ -153,18 +168,13 @@
 		<div class="banner-text-agile">
 			<div class="container">
 				<div class="banner-w3lstexts text-white text-center">
-				{% if messsages %}
-	                {% for message in messages %}
-			
-	                <div class="alert {{ message.tags }} alert-dismissible fade show" id="msg" role="alert">
-		               {{ message }}
-		               <button type="button" class="close" data-dismiss="alert" aria-label="close">
-		                <span aria-hidden="true">&times;</span>
-		               </button>
+					{% if messages %}
+					{% for message in messages %}
+					<div class="alert alert-success alert-dismissible fade show" id="msg" role="alert" >
+						{{ message }}
 					</div>
-				
 					{% endfor %}
-				{% endif %}
+				{% endif %} 
 					<h1>Perfect Place</h1>
 					<h4 class="text-uppercase mt-md-3 mt-2 mb-md-4 mb-3">for your home</h4>
 					<p class="text-white">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
@@ -175,47 +185,61 @@
 		</div>
 		<!-- //banner text -->
 	</div>
+	<!-- account setting -->
+	<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="login px-4 mx-auto mw-100">
+						<h5 class="text-center mb-4">Account Settings</h5>
+						{% if profile.profile_pic %}
+						<img src="/media/{{ profile.profile_pic }}" class="col-lg-6 map text-center" style="height:150px;width:150px;border-radius:50%;
+						display: block;margin-left: auto;margin-right: auto;width: 50%;">
+						</div>
+						{% else %}
+						<img src="{% static 'myhome/images/profile.png' %}" class="rounded mx-auto d-block" style="height:150px;width:150px;border-radius:50%;">
+						{% endif %}
+						<h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
+						<ul class="text-center list-unstyled mt-3 mb-4">
+							<li class="py-2 border-bottom">
+								<a href="{% url 'edit_profile' %}"> Edit Profile</a>
+							</li>
+							<li class="py-2 border-bottom">
+								<a href="{% url 'my_property' %}">My Property</a>
+							</li>
+							<li class="py-2 border-bottom">
+								<a href="{% url 'new_property' %}">Add Property</a>
+							</li>
+							<li class="py-2 ">
+								<a href="{% url 'change_password' %}" >Change Passwords</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //account setting -->
 	<!-- //banner -->
 
 	<!-- banner-bottom -->
 	<div class="serach-w3agile py-5">
 		<div class="container py-xl-4 py-lg-3">
-			<h3 class="title-w3ls mb-md-5 mb-4 font-weight-bold text-center">Find Your Property</h3>
+			<h3 class="title-w3ls mb-md-5 mb-4 font-weight-bold text-center">Find Your Home</h3>
 			<div class="place-grids">
 				<form action="{% url 'search' %}" method="get">
 					<div class="row">
-						<div class="col-sm-3 col-6 place-grid">
-							<h5>Select City</h5>
-							<select class="sel" required="">
-								<option value="">City 1</option>
-								<option value="">City 2</option>
-								<option value="">City 3</option>
-								<option value="">City 4</option>
-								<option value="">City 5</option>
-								<option value="">City 6</option>
-							</select>
-						</div>
-						<div class="col-sm-3 col-6 place-grid">
-							<h5>Property type</h5>
-							<select class="sel" required="">
-								<option value="">Select</option>
-								<option value="">Apartment</option>
-								<option value="">Independent house</option>
-								<option value="">Villa</option>
-								<option value="">Pent House</option>
-							</select>
-						</div>
-						<div class="col-sm-3 col-6 place-grid mt-sm-0 mt-3">
-							<h5>Type</h5>
-						<!--	<select class="sel" required="">
-								<option value="">BHK</option>
-								<option value="">1BHK</option>
-								<option value="">2BHK</option>
-								<option value="">3BHK</option>
-								<option value="">4BHK</option>
-								<option value="">5BHK</option>
-							</select>-->
-							<div><input type="search" name="search" placeholder="search..." class="sel"></div>
+						<div class="col-sm-9 col-10 place-grid mt-sm-0 mt-3">
+							<h5>Location</h5>
+							<div><input type="search" name="search" placeholder="search..." class="sel" required></div>
+							<div class="text-center py-3">
+								<a href="{% url 'new_property' %}" class="btn btn-warning glow"><strong> you own property? list here ></strong></a>
+							</div>
 						</div>
 						<div class="col-sm-3 col-6 place-grid">
 							<input type="submit" value="Search">
@@ -380,7 +404,7 @@
 									<li class="py-2 border-bottom">Creative Marketing</li>
 									<li class="py-2">-</li>
 								</ul>
-								<a href="#" class="btn btn-block py-2" data-toggle="modal" data-target="#exampleModalCenter1">
+								<a href="{% url 'property_type' %}" class="btn btn-block py-2">
 									<i class="far fa-user"></i> Get Started</a>
 							</div>
 						</div>
@@ -446,7 +470,7 @@
 					<div class="row mb-xl-5 mb-4">
 						<div class="col-4 w3layouts_stats_left w3_counter_grid">
 							<i class="fas fa-bed"></i>
-							<p class="counter">6</p>
+							<p class="counter">100</p>
 							<p class="para-text-w3ls">Bedroom</p>
 						</div>
 						<div class="col-4 w3layouts_stats_left w3_counter_grid2">
@@ -464,7 +488,7 @@
 						velit vel qu dapibus condimentum. Pellentesque consequat.</p>
 				</div>
 				<div class="col-lg-6 text-lg-left text-center mt-lg-0 mt-md-5 mt-4">
-					<img src="{% static 'myhome/image/middle.jpg' %}" alt="" class="img-fluid" />
+					<img src="{% static 'myhome/images/middle.jpg' %}" alt="" class="img-fluid" />
 				</div>
 			</div>
 		</div>
@@ -505,7 +529,7 @@
 									</ul>
 									<div class="row person-w3ls-testi mt-5">
 										<div class="col-6 agile-left-test text-right">
-											<img src="{% static 'myhome/image/te1.jpg' %}" alt=" " class="img-fluid rounded-circle" />
+											<img src="{% static 'myhome/images/te1.jpg' %}" alt=" " class="img-fluid rounded-circle" />
 										</div>
 										<div class="col-6 agile-right-test text-left mt-4">
 											<h5>John Frank</h5>
@@ -537,7 +561,7 @@
 									</ul>
 									<div class="row person-w3ls-testi mt-5">
 										<div class="col-6 agile-left-test text-right">
-											<img src="{% static 'myhome/image/te2.jpg' %}" alt=" " class="img-fluid rounded-circle" />
+											<img src="{% static 'myhome/images/te2.jpg' %}" alt=" " class="img-fluid rounded-circle" />
 										</div>
 										<div class="col-6 agile-right-test text-left mt-4">
 											<h5>John Frank</h5>
@@ -569,7 +593,7 @@
 									</ul>
 									<div class="row person-w3ls-testi mt-5">
 										<div class="col-6 agile-left-test text-right">
-											<img src="{% static 'myhome/image/te3.jpg' %}" alt=" " class="img-fluid rounded-circle" />
+											<img src="{% static 'myhome/images/te3.jpg' %}" alt=" " class="img-fluid rounded-circle" />
 										</div>
 										<div class="col-6 agile-right-test text-left mt-4">
 											<h5>John Frank</h5>
@@ -675,7 +699,7 @@
 
 	<!-- copyright -->
 	<div class="copy_right py-4 text-center">
-		<p class="text-white">©  WhiteBricks. All rights reserved | Design by
+		<p class="text-white">©2020 WhiteBricks. All rights reserved | Design by
 			<a href="http://w3layouts.com/">Muhammed Hafis</a>
 		</p>
 	</div>
@@ -738,7 +762,7 @@
 	<!-- //password-script -->
 
 	<!-- smooth scrolling -->
-	<script src="{% static 'myhomejs/SmoothScroll.min.js' %}"></script>
+	<script src="{% static 'myhome/js/SmoothScroll.min.js' %}"></script>
 	<!-- //smooth scrolling -->
 
 	<!-- move-top -->

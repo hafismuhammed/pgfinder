@@ -27,6 +27,7 @@
 	<!-- team deoslide -->
 	<link rel="stylesheet" href="{% static 'myhome/css/jquery.desoslide.css' %}">
 	<link rel="stylesheet" href="{% static 'myhome/css/style.css' %}" type="text/css" media="all" />
+	<link href="{% static 'myhome/css/extra.css' %}" rel="stylesheet" type="text/css">
 	<!-- Style-CSS -->
 	<link rel="stylesheet" href="{% static 'myhome/css/fontawesome-all.css' %}">
 	<!-- Font-Awesome-Icons-CSS -->
@@ -61,7 +62,7 @@
 						<div class="col-xl-5 col-lg-6 header_right text-center mt-lg-0 mt-2">
 							<div class="row">
 								<!-- social icons -->
-								<div class="col-4 w3social-icons">
+								<div class="col-3 w3social-icons">
 									<ul>
 										<li>
 											<a href="#" class="rounded-circle">
@@ -78,21 +79,29 @@
 												<i class="fab fa-twitter"></i>
 											</a>
 										</li>
-										<li class="pl-2">
-											<a href="#" class="rounded-circle">
-												<i class="fab fa-dribbble"></i>
-											</a>
-										</li>
 									</ul>
 								</div>
 								<!-- //social icons -->
 								{% if user.is_authenticated %}
-								<div class="col-4 header-loginw3ls text-lg-right text-center">
-									<a href="{% url 'logout' %}" class="log" >
-										<i class="fas fa-user mr-2"></i> logout</a>
+								<div class="col-3 header-loginw3ls text-lg-right text-center">
+									<a href="{% url 'logout' %}" class="log">
+										<i class="fas fa-sign-out-alt mr-2"></i> logout</a>
+								</div>
+								<div class="col-2 header-loginw3ls text-lg-right text-center">
+									<a href="{% url 'view_notification' %}" id="tooltip">
+										<i class="far fa-bell"></i>
+										<span class="tooltiptext">Notification</span>
+									</a>
 								</div>
 								<div class="col-4 header-loginw3ls">
-									<p>hi, {{user.first_name}}</p>
+									<a href="#" class="log" data-toggle="modal" data-target="#exampleModalCenter2">
+									    {% if profile.profile_pic %}
+										<span><img src="/media/{{ profile.profile_pic }}" alt=""  style="height:30px;width:30px;border-radius:50%" />
+										hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
+										{% else %}	
+										<span><img src="{% static 'myhome/images/profile.png' %}" style="height:30px;width:30px;border-radius:50%"></span>
+										 hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
+										 {% endif %}
 								</div>
 								{% else %}
 								<div class="col-4 header-loginw3ls text-lg-right text-center">
@@ -165,6 +174,46 @@
 		</div>
 		<!-- //banner-text -->
 	</div>
+	<!-- account setting -->
+	<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="login px-4 mx-auto mw-100">
+						<h5 class="text-center mb-4">Account Settings</h5>
+						{% if profile.profile_pic %}
+						<img src="/media/{{ profile.profile_pic }}" class="col-lg-6 map text-center" style="height:150px;width:150px;border-radius:50%;
+						display: block;margin-left: auto;margin-right: auto;width: 50%;">
+						</div>
+						{% else %}
+						<img src="{% static 'myhome/images/profile.png' %}" class="rounded mx-auto d-block" style="height:150px;width:150px;border-radius:50%;">
+						{% endif %}
+						<h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
+						<ul class="text-center list-unstyled mt-3 mb-4">
+							<li class="py-2 border-bottom">
+								<a href="{% url 'edit_profile' %}"> Edit Profile</a>
+							</li>
+							<li class="py-2 border-bottom">
+								<a href="{% url 'my_property' %}">My Property</a>
+							</li>
+							<li class="py-2 border-bottom">
+								<a href="{% url 'new_property' %}">Add Property</a>
+							</li>
+							<li class="py-2 ">
+								<a href="{% url 'change_password' %}" >Change Passwords</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //account setting -->
 	<!-- //banner -->
 
 	<!-- about -->
@@ -176,7 +225,7 @@
 			</div>
 			<div class="row features-row">
 				<div class="col-lg-5 features-right mt-3">
-					<img src="{% static 'myhome/image/about.jpg' %}" class="img-fluid" alt="" />
+					<img src="{% static 'myhome/images/about.jpg' %}" class="img-fluid" alt="" />
 				</div>
 				<div class="col-lg-7 features-left mt-lg-0 mt-5">
 					<div class="row features-grid">
@@ -275,8 +324,8 @@
 				<div class="col-lg-4 team-left">
 					<ul id="demo1_thumbs" class="list-inline">
 						<li>
-							<a href="{% static 'myhome/image/t1.jpg' %}">
-								<img src="{% static 'myhome/image/t1.jpg' %}" alt="" data-desoslide-caption="<h3>Carolyn Kylie</h3>  Eligendi optio nam libero tempore cum soluta nobis est cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis optio cumque nihil impedit quo minus id quod maxime placeat facere possimus">
+							<a href="{% static 'myhome/images/t1.jpg' %}">
+								<img src="{% static 'myhome/images/t1.jpg' %}" alt="" data-desoslide-caption="<h3>Carolyn Kylie</h3>  Eligendi optio nam libero tempore cum soluta nobis est cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis optio cumque nihil impedit quo minus id quod maxime placeat facere possimus">
 								<div class="team-w3text mt-3">
 									<h4 class="mb-2">Carolyn Kylie</h4>
 									<p>Fugiat nulltur</p>
@@ -284,8 +333,8 @@
 							</a>
 						</li>
 						<li>
-							<a href="{% static 'myhome/image/t2.jpg' %}">
-								<img src="{% static 'myhome/image/t2.jpg' %}" alt="" data-desoslide-caption="<h3>Brian Una</h3>  Nam libero tempore cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis optio cumque nihil impedit quo minus id quod maxime placeat facere possimus">
+							<a href="{% static 'myhome/images/t2.jpg' %}">
+								<img src="{% static 'myhome/images/t2.jpg' %}" alt="" data-desoslide-caption="<h3>Brian Una</h3>  Nam libero tempore cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis optio cumque nihil impedit quo minus id quod maxime placeat facere possimus">
 								<div class="team-w3text mt-3">
 									<h4 class="mb-2">Brian Una</h4>
 									<p>Omnis voluptnda</p>
@@ -293,8 +342,8 @@
 							</a>
 						</li>
 						<li>
-							<a href="{% static 'myhome/image/t3.jpg' %}">
-								<img src="{% static 'myhome/image/t3.jpg' %}" alt="" data-desoslide-caption="<h3>David Joe</h3>  Nam libero tempore cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis optio cumque nihil impedit quo minus id quod maxime placeat facere possimus">
+							<a href="{% static 'myhome/images/t3.jpg' %}">
+								<img src="{% static 'myhome/images/t3.jpg' %}" alt="" data-desoslide-caption="<h3>David Joe</h3>  Nam libero tempore cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis optio cumque nihil impedit quo minus id quod maxime placeat facere possimus">
 								<div class="team-w3text mt-3">
 									<h4 class="mb-2">David Joe</h4>
 									<p>Iste natus error</p>
@@ -302,8 +351,8 @@
 							</a>
 						</li>
 						<li>
-							<a href="{% static 'myhome/image/t4.jpg' %}">
-								<img src="{% static 'myhome/image/t4.jpg' %}" alt="" data-desoslide-caption="<h3>Piers Sam</h3>  Eligendi optio nam libero tempore cum soluta nobis est cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis optio cumque nihil impedit quo minus id quod maxime placeat facere possimus">
+							<a href="{% static 'myhome/images/t4.jpg' %}">
+								<img src="{% static 'myhome/images/t4.jpg' %}" alt="" data-desoslide-caption="<h3>Piers Sam</h3>  Eligendi optio nam libero tempore cum soluta nobis est cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis optio cumque nihil impedit quo minus id quod maxime placeat facere possimus">
 								<div class="team-w3text mt-3">
 									<h4 class="mb-2">Piers Sam</h4>
 									<p>Excepteur singt</p>
@@ -510,7 +559,7 @@
 									</ul>
 									<div class="row person-w3ls-testi mt-5">
 										<div class="col-6 agile-left-test text-right">
-											<img src="{% static 'myhome/image/te1.jpg' %}" alt=" " class="img-fluid rounded-circle" />
+											<img src="{% static 'myhome/images/te1.jpg' %}" alt=" " class="img-fluid rounded-circle" />
 										</div>
 										<div class="col-6 agile-right-test text-left mt-4">
 											<h5>John Frank</h5>
@@ -542,7 +591,7 @@
 									</ul>
 									<div class="row person-w3ls-testi mt-5">
 										<div class="col-6 agile-left-test text-right">
-											<img src="{% static 'myhome/image/te2.jpg' %}" alt=" " class="img-fluid rounded-circle" />
+											<img src="{% static 'myhome/images/te2.jpg' %}" alt=" " class="img-fluid rounded-circle" />
 										</div>
 										<div class="col-6 agile-right-test text-left mt-4">
 											<h5>John Frank</h5>
@@ -574,7 +623,7 @@
 									</ul>
 									<div class="row person-w3ls-testi mt-5">
 										<div class="col-6 agile-left-test text-right">
-											<img src="{% static 'myhome/image/te3.jpg' %}" alt=" " class="img-fluid rounded-circle" />
+											<img src="{% static 'myhome/images/te3.jpg' %}" alt=" " class="img-fluid rounded-circle" />
 										</div>
 										<div class="col-6 agile-right-test text-left mt-4">
 											<h5>John Frank</h5>
@@ -695,7 +744,7 @@
 
 	<!-- copyright -->
 	<div class="copy_right py-4 text-center">
-		<p class="text-white">© WhiteBricks. All rights reserved | Design by
+		<p class="text-white">©2020 WhiteBricks. All rights reserved | Design by
 			<a href="http://w3layouts.com/">Muhammed Hafis</a>
 		</p>
 	</div>

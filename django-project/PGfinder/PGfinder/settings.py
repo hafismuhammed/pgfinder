@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'debug_toolbar',
+    'rest_framework',
     'six',
     'crispy_forms',
     'WhiteBricks',
-    'rest_framework',
     
 ]
 
@@ -54,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'PGfinder.urls'
@@ -87,7 +90,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'pgfinder_db',
         'USER': 'root',
-        'PASSWORD': 'Hafis@123',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
         
@@ -150,7 +153,7 @@ MESSAGE_TAGS = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'hafismuhammed25@gmail.com'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = 'mnbj qvoh ddbq nmde'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
 
@@ -167,3 +170,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]

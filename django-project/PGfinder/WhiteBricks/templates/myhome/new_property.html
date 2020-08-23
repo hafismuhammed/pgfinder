@@ -20,16 +20,16 @@
 			<p>See your roperty</p>
 		</div>
 		<div class="row contact-form py-3">
-			<!-- contact map -->
+			<!-- image block -->
 			<div class="col-lg-6 map text-center">
-				<h4>Our world wide range of Branches </h4>
-				<img src="{% static 'myhome/image/house2.jpg' %}" alt="" class="img-fluid">
+				<div class="row"><img src="{% static 'myhome/images/house.jpg' %}" alt="" class="img-fluid" /></div>
+				<div class="row"><h4>How WhiteBricks different ?</h4>
 			</div>
-			<!-- //contact map -->
+			<!-- //image block -->
 			<!-- form -->
 			<div class="col-lg-6 wthree-form-left mt-lg-0 mt-5">
 				<div class="contact-top1">
-					<form action="{% url 'new_property' property.id %}" method="post" enctype="multipart/form-data">
+					<form action="{% url 'edit_property' property.id %}" method="post" enctype="multipart/form-data">
 						{% csrf_token %}
 						{% load crispy_forms_tags %}
 							<div class="form-group">

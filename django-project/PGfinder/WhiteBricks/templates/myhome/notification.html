@@ -1,0 +1,45 @@
+{% extends 'formbase.html' %}
+{% load static %}
+{% block content %}
+
+<!-- banner-text -->
+<div class="banner-w3ltext about-w3bnr">
+	<div class="container">
+		<h1 class="text-white text-center">
+			<a href="{% url 'home' %}">Home</a> / Notifications</h1>
+	</div>
+</div>
+<!-- //banner-text -->
+</div>
+<!-- //banner -->
+<!-- notification -->
+<section class="wthree-row w3-gallery py-5">
+	<div class="container-fluid py-xl-5 py-lg-3">
+		<div class="text-center mb-lg-5 mb-4">
+			<h3 class="tittle mb-2">Notifications</h3>
+			<p>See your choice</p>
+        </div>
+            <div class="offset-md-2" style="font-size: 2.5em;">
+                {% if notifications %}
+                <div class="text-right">
+                    <a href="{% url 'delete_notification' %}" class="btn btn-danger">Clear all</a>
+                </div>
+                {% for notification in notifications %}
+                    <i class="fas fa-comment-alt" ></i>
+                    <p>{{ notification.notification }}</p>
+                    <p class="pl-3 text-left">{{ notification.date }}</p>
+                    <hr>
+                {% endfor %}
+                {% else %}
+                <div class="jumbotron">
+                    <h1 class="display-4 text-center">You have no notification !!! </h1>
+                    <p class="lead text-center">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+                    <hr class="my-4">
+                    <p class="text-center">It uses utility classes for typography and spacing to space content out within the larger container.</p>
+                  </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+        
+{% endblock %}

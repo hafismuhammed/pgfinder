@@ -3,7 +3,7 @@
 <html lang="zxx">
 
 <head>
-	<title>District Real Estates Category Bootstrap Responsive website Template | Home :: W3layouts</title>
+	<title>WhiteBricks Real Estates Category Bootstrap Responsive website Template | Home :: W3layouts</title>
 	<!-- Meta tag Keywords -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="UTF-8" />
@@ -24,6 +24,7 @@
 	<link rel="stylesheet" href="{% static 'myhome/css/bootstrap.css' %}">
 	<!-- Bootstrap-Core-CSS -->
 	<link rel="stylesheet" href="{% static 'myhome/css/style.css' %}" type="text/css" media="all">
+	<link href="{% static 'myhome/css/extra.css' %}" rel="stylesheet" type="text/css">
 	<!-- Style-CSS -->
 	<link rel="stylesheet" href="{% static 'myhome/css/fontawesome-all.css' %}">
 	<!-- Font-Awesome-Icons-CSS -->
@@ -40,7 +41,7 @@
 	
 		<!-- header -->
 		<header>
-			<div class="header_topw3layouts_bar">
+			<div class="header_topw3layouts_bar" style="background-color: rgb(34, 33, 33);">
 				<div class="container">
 					<!-- header-top -->
 					<div class="row border-bottom py-lg-4 py-3">
@@ -57,7 +58,7 @@
 						<div class="col-xl-5 col-lg-6 header_right text-center mt-lg-0 mt-2">
 							<div class="row">
 								<!-- social icons -->
-								<div class="col-4 w3social-icons">
+								<div class="col-3 w3social-icons">
 									<ul>
 										<li>
 											<a href="#" class="rounded-circle">
@@ -78,12 +79,25 @@
 								</div>
 								<!-- //social icons -->
 								{% if user.is_authenticated %}
-								<div class="col-4 header-loginw3ls text-lg-right text-center">
-									<a href="{% url 'logout' %}" class="log" >
-										<i class="fas fa-user mr-2"></i> logout</a>
+								<div class="col-3 header-loginw3ls text-lg-right text-center">
+									<a href="{% url 'logout' %}" class="log">
+										<i class="fas fa-sign-out-alt mr-2"></i> logout</a>
+								</div>
+								<div class="col-2 header-loginw3ls text-lg-right text-center">
+									<a href="{% url 'view_notification' %}" id="tooltip">
+										<i class="far fa-bell"></i>
+										<span class="tooltiptext">Notification</span>
+									</a>
 								</div>
 								<div class="col-4 header-loginw3ls">
-									<p>hi, {{user.first_name}}</p>
+									<a href="#" class="log" data-toggle="modal" data-target="#exampleModalCenter2">
+									    {% if profile.profile_pic %}
+										<span><img src="/media/{{ profile.profile_pic }}" alt=""  style="height:30px;width:30px;border-radius:50%" />
+										hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
+										{% else %}	
+										<span><img src="{% static 'myhome/images/profile.png' %}" style="height:30px;width:30px;border-radius:50%"></span>
+										 hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
+										 {% endif %}
 								</div>
 								{% else %}
 								<div class="col-4 header-loginw3ls text-lg-right text-center">
@@ -102,7 +116,7 @@
 
 					<!-- navigation -->
 					<nav class="navbar navbar-expand-lg navbar-light bg-light">
-						<a class="navbar-brand" href="#">White Bricks
+						<a class="navbar-brand" href="#">WhiteBricks
 							<span>Real Property</span>
 						</a>
 						<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -151,7 +165,41 @@
         {% block content %}
 
 
-        {% endblock %}
+		{% endblock %}
+		<!-- account setting -->
+	<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="login px-4 mx-auto mw-100">
+						<h5 class="text-center mb-4">Account Settings</h5>
+						<img src="{% static 'myhome/images/profile.png' %}" class="rounded mx-auto d-block" style="height:150px;width:150px;border-radius:50%;"></span>
+						<h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
+						<ul class="text-center list-unstyled mt-3 mb-4">
+							<li class="py-2 border-bottom">
+								<a href="{% url 'edit_profile' %}"> Edit Profile</a>
+							</li>
+							<li class="py-2 border-bottom">
+								<a href="{% url 'my_property' %}">My Property</a>
+							</li>
+							<li class="py-2 border-bottom">
+								<a href="{% url 'new_property' %}">Add Property</a>
+							</li>
+							<li class="py-2 ">
+								<a href="{% url 'change_password' %}" >Change Passwords</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- //account setting -->
 
         <!-- footer top -->
 	<div class="footer-top py-5 text-center">
@@ -175,10 +223,10 @@
 						<div class="col-md-9 address-right text-left">
 							<h6 class="ad-info text-uppercase mb-2">Email</h6>
 							<p>
-								<a href="mailto:example@email.com"> mail 1@example.com</a>
+								<a href="mailto:example@email.com"> whitebricks1@gmail.com</a>
 							</p>
 							<p>
-								<a href="mailto:example@email.com"> mail 2@example.com</a>
+								<a href="mailto:example@email.com"> whitebricks2@gmail.com</a>
 							</p>
 						</div>
 
@@ -203,8 +251,8 @@
 						</div>
 						<div class="col-md-9 address-right text-left">
 							<h6 class="ad-info text-uppercase mb-2">Address</h6>
-							<p> 786 Main Road, hollies</p>
-							<p> California, USA</p>
+							<p> WhiteBricks Inc Pvt Ltd,</p>
+                        	<p> New York, USA</p>
 						</div>
 					</div>
 				</div>
@@ -241,7 +289,7 @@
 
 	<!-- copyright -->
 	<div class="copy_right py-4 text-center">
-		<p class="text-white">© 2018 District. All rights reserved | Design by
+		<p class="text-white">© 2020 WhiteBricks. All rights reserved | Design by
 			<a href="http://w3layouts.com/">W3layouts</a>
 		</p>
 	</div>
@@ -305,7 +353,7 @@
 	<!-- //password-script -->
 
 	<!-- smooth scrolling -->
-	<script src="{% static 'myhomejs/SmoothScroll.min.js' %}"></script>
+	<script src="{% static 'myhome/js/SmoothScroll.min.js' %}"></script>
 	<!-- //smooth scrolling -->
 
 	<!-- move-top -->

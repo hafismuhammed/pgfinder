@@ -8,57 +8,26 @@ urlpatterns = [
     path('home/', views.index, name='home'),
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
+    path('all_property', views.property_list, name='all_property'),
     path('my_property/', views.my_property, name='my_property'),
     path('register/', views.Register, name='register'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('login/', views.loginPage, name='login'),
     path('logout', views.logingout, name='logout'),
+    path('change_password', views.change_password, name='change_password'),
+    path('edit_profile', views.edit_profile, name='edit_profile'),
     path('insert/', views.Adverticement, name='new_property'),
     path('search/', views.search, name='search'),
-    #path('my_property', views.MyProperty, name='my_property'),
-    
-    #path(
-    #    'reset_password/',
-    #    auth_views.PasswordResetView.as_view(
-    #        template_name='myhome/reset_password.html',
-    #        html_email_template_name='myhome/reset_password_email.html',
-    #        success_url=settings.LOGIN_URL,
-     #       token_generator=account_activation_token),
-     #       name='reset_password'
-  #  ),
-    #path(
-    #    'reset_password_conformation/<str:uidb64>/<str:token>/',
-    #    auth_views.PasswordResetConfirmView.as_view(
-    #        template_name='myhome/reset_password_update.html',
-    #        post_reset_login=True,
-    #        post_reset_login_backend='django.contrib.auth.backends.ModelBackend',
-    #        token_generator=account_activation_token,
-    #        success_url=settings.LOGIN_REDIRECT_URL),
-    #        name='password_reset_confirm'
-    #    ),
+    path('property_type', views.property_list, name='property_type'),
+    path('forgot', views.forgot_password, name='forgot_password'),
+    path('reset_password', views.reset_password, name='reset_password'),
+    path('property_details/<int:requested_id>', views.property_previw, name='property_details'),
     path('edit_property/<int:requested_property_id>', views.edit_property, name='edit_property'),
     path('delete_property/<int:requested_id>', views.delete_property, name='delete_property'),
     path('contact_details/', views.contact_details, name='contact_details'),
-    path('login_api', views.login_api, name='login_api'),
-    # testing ajax
-    path('test_ajax', views.sample_ajax_view, name='test-ajax'),
-    path('ajax_template', views.sample_view, name='sample_view'),
-
-        # test password reser
-    
-    path('password_reset', auth_views.PasswordResetView.as_view(template_name='myhome/reset_password.html'),  name='reset_password'),
-    path('reset_password_done', auth_views.PasswordResetDoneView.as_view(template_name='myhome/reset_email_sent.html'), name='password_reset_done'),
-    path('reset/confirm/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name='myhome/reset_password_update.html'), name='password_reset_confirm'),
-    path('password_reset_complete', auth_views.PasswordResetCompleteView.as_view(template_name='myhome/password_reset_done.html'), name='password_reset_complete'),
-
-    path('like/', views.like_post, name='like_post'),
-    #path('', views.post_view, name='post-list'),
-# for trial
-    #path('password_reset', auth_views.password_reset,  name='password_reset'),
-    #path('reset_password_done', auth_views.password_reset_done, name='password_reset_done'),
-    #path('password-reset/confirm/<uidb64>/<token>', auth_views.password_reset_confirm, name='password_reset_confirm'),
-    #path('password_reset_complete', auth_views.password_reset_complete, name='password_reset_complete'),
-    
+    path('notification', views.notification, name='notification'),
+    path('veiw_notification', views.view_notification, name='view_notification'),
+    path('delete_notification', views.delete_notification, name='delete_notification'),
     ]
 
    

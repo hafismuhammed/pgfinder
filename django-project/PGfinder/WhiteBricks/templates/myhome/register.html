@@ -2,16 +2,14 @@
 {% load static %}
 {% block content %}
 
-<div class="col-md-4 offset-md-4 col-sm-7 offset-sm-2" >
-<!-- register -->
-<!--<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-hidden="true">-->
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header text-center"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
             <div class="modal-body">
-                <div class="login px-4 mx-auto mw-100">
-                    <h5 class="text-center mb-4">Register Now</h5>
-                    <form action="{% url 'register' %}" method="post">
+            <div class="my-5 p-5 pro">
+                    <h5 class="text-center mb-4">Register Now</h5><hr>
+                    <div id=result></div>
+                    <form action="" method="post" id="reg-form">
                         {% csrf_token %}
                         <div class="form-group">
                             <label>First Name</label>
@@ -30,6 +28,10 @@
                             <input type="email" class="form-control" name="email" placeholder="" required="">
                         </div>
                         <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="number" class="form-control" name="con_number" placeholder="" required="">
+                        </div>
+                        <div class="form-group">
                             <label class="mb-2">Password</label>
                             <input type="password" class="form-control" name="password1" id="password1" placeholder="" required="">
                         </div>
@@ -37,9 +39,12 @@
                             <label>Confirm Password</label>
                             <input type="password" class="form-control" name="password2" id="password2" placeholder="" required="">
                         </div>
-                        <button type="submit" class="btn btn-primary submit mb-4">Register</button>
+                        <button type="submit" class="btn btn-primary submit mb-4" id="submit-btn">Register</button>
+                        <div class="mt-5" id="spin" style="display: none;">
+							<div class="loader"></div>
+						</div>
                         <p class="text-center pb-4">
-                            <a href="#">By clicking Register, I agree to your terms</a>
+                            <a href="{% url 'login' %}" class="text-center pb-4">Already a user go to the login page</a>
                         </p>
                     </form>
                 </div>
@@ -49,4 +54,40 @@
 </div>
 <!--//register-->
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $(document).on("submit", "#reg-form",function(event){
+            event.preventDefault();
+            $("#spin").show();
+            
+            $.ajax({
+                url: "{% url 'register' %}",
+                type: "POST",
+                data: $("#reg-form").serialize(),
+                success:function(data){
+                    $("#spin").hide();
+                    if(data.status == "used_username"){
+                        $("#result").html("<p class='alert alert-danger'>This username is already taken, Please enter another one</p>");
+                    }
+                    else if(data.status == "used_email"){
+                        $("#result").html("<p class='alert alert-danger'>This email is already taken, Please enter another one</p>" );
+                    }
+                    else if(data.status == "success"){
+            
+                        $("#result").html("<p class='alert alert-success'>Succesfully created your account,Please Check your email and activate the account</p>");
+                        
+                    }
+                }
+            })
+        })
+    })
+
+    setTimeout(function(){
+		if ($('#result').length > 0) {
+			$('#result').remove();
+		}
+		}, 2000)
+</script>
+      
 {% endblock %}                               		

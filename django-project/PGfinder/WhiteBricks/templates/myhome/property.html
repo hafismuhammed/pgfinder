@@ -22,7 +22,7 @@
 			</div>
 			{% if messages %}
     		{% for message in messages %}
-    		<div  {% if messages.tags %} class="alert {{ messages.tags }} alert-dismissible fade show" id="msg" role="alert" {% endif %}>
+    		<div class="alert alert-success" id="msg" role="alert">
 				{{ message }}
     		</div>
     		{% endfor %}
@@ -50,65 +50,9 @@
 					<a href="#" title="Category 6">Pool</a>
 				</li>
 			</ul>
+
+			<h5 class="mx-5">{{ total_pro }}- Your own Property</h5>
 		{% for property in properties %}
-	<!--	<div class="row">
-			<div class="col-sm-2 col-md-2"></div>
-			<div class="col-sm-4 col-md-4">
-				<div class="inner">
-				<img  class="img-fluid" src="{{ property.images.url }}" style="width: 100%">
-				</div>
-			</div>
-			<div class="col-sm-5 col-md-5">
-				<div class="caption">
-					<h3>{{ property.headline }}</h3>
-					<div>
-							{{property.city}}
-						</div>
-						<div>
-							{{property.location}}
-						</div>
-						<div>
-							{{property.facilites}}
-						</div>
-						<div>
-							{{property.rent}}
-						</div>
-						<div>
-							<a href="{% url 'edit_property' property.id %}" class="btn btn-success">Edit</a>
-						
-
-						<button type="button" class="log btn btn-danger" data-toggle="modal" data-target="#deleteBox">delete</button>
-						<div class="modal fade" id="deleteBox" tabindex="-1" role="dialog" aria-hidden="true">
-							<div class="modal-dialog modal-dialog-centered" role="document">
-								<div class="modal-content">
-									<div class="modal-header text-center">
-										<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-											<span aria-hidden="true">&times;</span>
-										</button>
-									</div>
-									<div class="modal-body">
-										<div class="px-4 mx-auto mw-100">
-											<h5 class="mb-4">Delete</h5>
-											<strong>The following property will be deleted permanenty.</strong>
-											<p class="pl-3">Property: {{ property.headline }}</p>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-primary" data-dismiss="modal">CANCEL</button>
-											<a href="{% url 'delete_property' property.id %}" class="btn btn-danger">OK</a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-								</div>
-							</div>
-						</div>
-					</div>
-			</div>
-		</div>
-	</div>
-		<hr>-->
 		<div class="container">
 			<div class="row">
 				<div class="mx-auto">
@@ -141,11 +85,12 @@
 										<strong>Email: </strong>{{ property.email }}
 									</div>
 									<div>
-										<strong>Mobail: </strong>{{ property.mobile }}
+										<strong>Mobile: </strong>{{ property.mobile }}
 									</div>
 									<div>
-										{{property.facilites}}
+										<strong>Facilities: </strong>{{ property.facilites }}
 									</div>
+									
 									<div id="response"></div>
 								</div>
 							</div>

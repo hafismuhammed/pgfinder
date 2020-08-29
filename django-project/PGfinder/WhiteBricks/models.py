@@ -21,11 +21,12 @@ class Profile(models.Model):
         return self.address
 
 class Property(models.Model):
-    category = (
-        ('family', 'family'),
-        ('boys', 'boys'),
-        ('girls', 'girls'),
-        ('any', 'any'),
+
+    catogery = (
+        ('family', 'Family'),
+        ('boys', 'Boys'),
+        ('girls', 'Girls'),
+        ('any', 'Any')
     )
 
     owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
@@ -33,7 +34,7 @@ class Property(models.Model):
     city = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     address = models.CharField(max_length=200, null=True)
-    types = models.CharField(max_length=100, choices=category, null=True)
+    types = models.CharField(max_length=100, choices=catogery, null=True)
     facilites = models.TextField()
     rent = models.CharField(max_length=200)
     deposite = models.CharField(max_length=100, null=True)

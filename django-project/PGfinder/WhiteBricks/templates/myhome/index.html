@@ -207,16 +207,16 @@
 						<h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
 						<ul class="text-center list-unstyled mt-3 mb-4">
 							<li class="py-2 border-bottom">
-								<a href="{% url 'edit_profile' %}"> Edit Profile</a>
+								<a href="{% url 'edit_profile' %}" class="detail"> Edit Profile</a>
 							</li>
 							<li class="py-2 border-bottom">
-								<a href="{% url 'my_property' %}">My Property</a>
+								<a href="{% url 'my_property' %}" class="detail">My Property</a>
 							</li>
 							<li class="py-2 border-bottom">
-								<a href="{% url 'new_property' %}">Add Property</a>
+								<a href="{% url 'new_property' %}" class="detail">Add Property</a>
 							</li>
 							<li class="py-2 ">
-								<a href="{% url 'change_password' %}" >Change Passwords</a>
+								<a href="{% url 'change_password' %}" class="detail">Change Passwords</a>
 							</li>
 						</ul>
 					</div>
@@ -236,13 +236,13 @@
 					<div class="row">
 						<div class="col-sm-9 col-10 place-grid mt-sm-0 mt-3">
 							<h5>Location</h5>
-							<div><input type="search" name="search" placeholder="search..." class="sel" required></div>
+							<div><input type="search" name="search" placeholder="search..." class="sel" required ></div>
 							<div class="text-center py-3">
 								<a href="{% url 'new_property' %}" class="btn btn-warning glow"><strong> you own property? list here ></strong></a>
 							</div>
 						</div>
 						<div class="col-sm-3 col-6 place-grid">
-							<input type="submit" value="Search">
+							<input type="submit" value="Search" >
 						</div>
 					</div>
 				</form>
@@ -404,7 +404,7 @@
 									<li class="py-2 border-bottom">Creative Marketing</li>
 									<li class="py-2">-</li>
 								</ul>
-								<a href="{% url 'property_type' %}" class="btn btn-block py-2">
+								<a href="" class="btn btn-block py-2">
 									<i class="far fa-user"></i> Get Started</a>
 							</div>
 						</div>
@@ -469,19 +469,19 @@
 					<h6 class="mt-3 mb-5">Some words about our property</h6>
 					<div class="row mb-xl-5 mb-4">
 						<div class="col-4 w3layouts_stats_left w3_counter_grid">
-							<i class="fas fa-bed"></i>
-							<p class="counter">100</p>
-							<p class="para-text-w3ls">Bedroom</p>
+							<i class="fas fa-home"></i>
+							<p class="counter">30,000+</p>
+							<p class="para-text-w3ls">Houses across Newyork</p>
 						</div>
 						<div class="col-4 w3layouts_stats_left w3_counter_grid2">
-							<i class="fas fa-bath"></i>
-							<p class="counter">4</p>
-							<p class="para-text-w3ls">Bathroom</p>
+							<i class="fas fa-users"></i>
+							<p class="counter">53,000+</p>
+							<p class="para-text-w3ls">Happy Coustemers</p>
 						</div>
 						<div class="col-4 w3layouts_stats_left w3_counter_grid1">
-							<i class="fas fa-car"></i>
-							<p class="counter">2</p>
-							<p class="para-text-w3ls">Car Parking</p>
+							<i class="fas fa-building"></i>
+							<p class="counter">15</p>
+							<p class="para-text-w3ls">Cities in Newyork</p>
 						</div>
 					</div>
 					<p>Cras sagittis mi sit amet malesuada mollis. Mauris porroinit consectetur cursus tortor vel interdum. Suspendisse interdum
@@ -608,6 +608,35 @@
 
 			</div>
 		</div>
+	<!--new slide down nav-->
+	<div id="newslide">
+		<div class="row">
+		<div class="col-md-3" >
+			<a class="navbar-brand" href="#" style="font-size: 35px;">WhiteBricks
+				<span>Real Property</span>
+			</a>
+		</div>
+		<div class="col-md-6">
+		<form action="{% url 'search' %}" method="get">
+			<div class="row">
+				<div class="col-sm-9 col-10 place-grid mt-sm-0 my-3">
+					
+					<div>
+						<input type="search" name="search" placeholder="search property..." class="sel" style="border:2px solid black " required>
+					</div>
+				</div>
+				</div>
+				
+			</div>
+		</form>
+		<div class="col-md-3 my-3">
+			<a href="{% url 'new_property' %}" class="btn btn-warning addNew"><strong>Add Property ></strong></a>
+		</div>
+	
+	</div>
+	</div>
+	<!--//new slide down nav-->
+
 	</div>
 	<!-- //testimonials -->
 
@@ -731,9 +760,7 @@
 	<!-- stats -->
 	<script src="{% static 'myhome/js/jquery.waypoints.min.js' %}"></script>
 	<script src="{% static 'myhome/js/jquery.countup.js' %}"></script>
-	<script>
-		$('.counter').countUp();
-	</script>
+	
 	<!-- //stats -->
 
 	<!-- password-script -->
@@ -754,10 +781,21 @@
 		}
 
 		setTimeout(function(){
-		if ($('#msg').length > 0) {
-			$('#msg').remove();
+			if ($('#msg').length > 0) {
+				$('#msg').remove();
+			}
+			}, 2000)
+
+			// When the user scrolls down 20px from the top of the document, slide down the navbar
+		window.onscroll = function() {scrollFunction()};
+
+		function scrollFunction() {
+			if (document.body.scrollTop > 1100 || document.documentElement.scrollTop > 1100) {
+				document.getElementById("newslide").style.top = "0";
+			} else {
+				document.getElementById("newslide").style.top = "-200px";
+			}
 		}
-		}, 2000)
 	</script>
 	<!-- //password-script -->
 

@@ -1,4 +1,3 @@
-import json
 import random
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -10,7 +9,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-#from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.core.mail import EmailMessage
 from django.db.models import Q 
@@ -21,8 +19,6 @@ from .models import Property, Notifications, Profile
 from .forms import AccomodationForm, ProfileForm, PasswordChangeForm
 from .filters import OrderFilter
 from .serializer import PropertySerializer
-#from .decerator import ajax_login_required
-#for the trial
 
 
 # Home page
@@ -90,7 +86,7 @@ def Register(request):
 
       profile = Profile(user=user, contact_number=con_number)
       profile.save()
-      #Activation email
+  
       current_site = get_current_site(request)
       mail_subject ='Activate your account'
       message = render_to_string('acc_active_email.html', {
@@ -321,12 +317,17 @@ def search(request):
   if qur is not None:
     looking = Q(city__icontains=qur)
     properties = Property.objects.filter(looking)
+    property_count = properties.count()
   else:
     accomodations = Property.objects.all()
     if request.user.is_authenticated:
       profile = Profile.objects.get(user=request.user.id)
       context = {'profile': profile}
-  context = {'properties': properties}
+  context = {
+    'properties': properties,
+    'total_pro': property_count,
+    'location': qur
+    }
   return render(request, 'myhome/search.html', context)
 
 def property_previw(request, requested_id):
@@ -351,9 +352,9 @@ def contact_details(request):
     return JsonResponse({"authenticated": False})
 
 #property view
-def property_list(request):
+def property_list(request, requested_type):
   profile = Profile.objects.get(user=request.user.id)
-  properties = Property.objects.values('types')
+  properties = Property.objects.filter(types=requested_type)
   context = {
     'profile':profile,
     'properties': properties
@@ -364,9 +365,11 @@ def property_list(request):
 def my_property(request):
   profile = Profile.objects.get(user=request.user.id)
   properties = Property.objects.filter(owner=request.user)
+  count_pro = properties.count()
   context = { 
     'profile': profile,
-    'properties': properties 
+    'properties': properties,
+    'total_pro': count_pro 
     }
   return render(request, 'myhome/property.html', context)
 
@@ -381,8 +384,11 @@ def edit_property(request, requested_property_id):
       property_details.headline = property_form.cleaned_data['headline']
       property_details.city = property_form.cleaned_data['city']
       property_details.location = property_form.cleaned_data['location'] 
+      property_details.address = property_form.cleaned_data['address'] 
+      property_details.types = property_form.cleaned_data['types'] 
       property_details.facilites = property_form.cleaned_data['facilites']
       property_details.rent = property_form.cleaned_data['rent']
+      property_details.deposite = property_form.cleaned_data['deposite'] 
       property_details.email = property_form.cleaned_data['email'] 
       property_details.mobile = property_form.cleaned_data['mobile']
       property_details.images = request.FILES['images']
@@ -399,7 +405,8 @@ def edit_property(request, requested_property_id):
       "address": property_details.address, "types": property_details.types,
       "location": property_details.location, "facilities": property_details.facilites, 
       "rent": property_details.rent, "email": property_details.email, 
-      "mobile":property_details.mobile, "images": property_details.images
+      "mobile": property_details.mobile, "images": property_details.images,
+      "deposite": property_details.deposite
       })
     context = {
       'form': property_form,

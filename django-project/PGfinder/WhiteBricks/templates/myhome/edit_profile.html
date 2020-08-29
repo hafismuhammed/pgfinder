@@ -23,24 +23,16 @@
 			<!-- image block -->
 			<div class="col-lg-6 map text-center">
 				{% if profile or user %}
-			<!--	<img src="/media/{{ profile.profile_pic }}" alt=""  style="height:150px;width:150px;border-radius:50%" />
-				<h3>{{ user.first_name }} {{ user.last_name }}</h3><hr>
-				<h5 class="text-left">Email: <p>{{ user.email }}</p></h35>
-				<h5 class="text-left">Contact Number: <p>{{ profile.contact_number }}</p></h5>
-				<h5 class="text-left">Occupation:<p>{{ profile.occupation }}</p></h5>
-				<h5 class="text-left">Address: <p>{{ profile.address }}</p></h5>
-				<h5 class="text-left">About: <p>{{ profile.about }}</p></h5>
-				-->
 				<div class="card pro">
 					<div class="card-body">
 						<img src="/media/{{ profile.profile_pic }}" alt="" class="img-fluid rounded-circle w-60 mb-10" style="height: 400px;">
 						<h3>{{ user.first_name }} {{ user.last_name }}</h3>
 						
-						<span><i class="fas fa-at"></i>{{ user.email }}</span><br>
-						<span><i class="fas fa-phone-square"></i>{{ profile.contact_number }}</span><br>
-						<span><i class="far fa-address-card"></i>{{ profile.address }}</span><br>
+						<span><i class="fas fa-at mail"></i>{{ user.email }}</span><br>
+						<span><i class="fas fa-phone-square phn"></i>{{ profile.contact_number }}</span><br>
+						<span><i class="far fa-address-card adrs"></i>{{ profile.address }}</span><br>
 						<strong>About: </strong>
-						<p>{{ profile.about }}}
+						<p>{{ profile.about }}
 						</p>
 						<div class="d-flex flex-row justify-content-center">
 							<div calss="p-4">

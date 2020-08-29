@@ -1,9 +1,11 @@
 
 <!DOCTYPE html>
 <html lang="zxx">
+{% load static %}
 
 <head>
 	<title>WhiteBricks Real Estates Category Bootstrap Responsive website Template | Contact Us :: WhiteBricks</title>
+	<link rel="shortcut icon" href="https://static.vecteezy.com/system/resources/thumbnails/000/596/284/small/03232019-37.jpg' %}" type="image/ico" />
 	<!-- Meta tag Keywords -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="UTF-8" />
@@ -21,7 +23,6 @@
 	<!--// Meta tag Keywords -->
 
 	<!-- Custom-Files -->
-	{% load static %}
 	<link rel="stylesheet" href="{% static 'myhome/css/bootstrap.css' %}">
 	<!-- Bootstrap-Core-CSS -->
 	<link rel="stylesheet" href="{% static 'myhome/css/style.css' %}" type="text/css" media="all" />
@@ -195,16 +196,16 @@
 						<h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
 						<ul class="text-center list-unstyled mt-3 mb-4">
 							<li class="py-2 border-bottom">
-								<a href="{% url 'edit_profile' %}"> Edit Profile</a>
+								<a href="{% url 'edit_profile' %}" class="detail"> Edit Profile</a>
 							</li>
 							<li class="py-2 border-bottom">
-								<a href="{% url 'my_property' %}">My Property</a>
+								<a href="{% url 'my_property' %}" class="detail">My Property</a>
 							</li>
 							<li class="py-2 border-bottom">
-								<a href="{% url 'new_property' %}">Add Property</a>
+								<a href="{% url 'new_property' %}" class="detail">Add Property</a>
 							</li>
 							<li class="py-2 ">
-								<a href="{% url 'change_password' %}" >Change Passwords</a>
+								<a href="{% url 'change_password' %}" class="detail">Change Passwords</a>
 							</li>
 						</ul>
 					</div>
@@ -251,7 +252,7 @@
 						<div class="mt-5" id="spin" style="display: none;">
 							<div class="loader"></div>
 						</div>
-						<div id="result"></div>
+						<div id="msg"></div>
 					</div>
 				</div>
 				<!-- //contact form -->
@@ -405,10 +406,9 @@
 					data: $("#email-form").serialize(),
 					success: function(data){
 						$("#spin").hide();
-						if(data.status == "sucess"){
-						//	$("#result").html("<p class='alert alert-success'>we will get back to you as soon as possible</p>");
-						//	$("#email-form").reset();
-						alert('email sent');
+						if(data.status == "success"){
+							$("#msg").html("<p class='alert alert-success'>we will get back to you as soon as possible</p>" );
+							$("#email-form").trigger("reset");
 						}
 					}
 				})
@@ -416,8 +416,8 @@
 		})
 
 		setTimeout(function(){
-		if ($('#result').length > 0) {
-			$('#result').remove();
+		if ($('#msg').length > 0) {
+			$('#msg').remove();
 		}
 		}, 5000)
 	</script>

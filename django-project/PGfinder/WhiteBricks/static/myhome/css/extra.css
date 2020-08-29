@@ -139,7 +139,77 @@
   }
 
   .time, .papper, .secure{
-    font-size:50px;
+    font-size:50px
   }
+
+  .mail, .phn, .adrs{
+    font-size:20px
+  }
+
+  /* aditional nav */
+  #newslide {
+	  background-color: whitesmoke;
+	  position: fixed;
+	  top: -100px;
+	  width: 100%;
+	  display: block;
+	  transition: top 0.3s;
+	}
+	
+	#newslide a {
+	  font-weight: bold;
+	  display: block;
+	  color: black;
+	  text-align: center;
+	  padding: 15px;
+	  text-decoration: none;
+	  font-size: 17px;
+	}
+	
+	#newslide a:hover {
+	  background-color: #ddd;
+	  color: black;
+	}
+
+	.addNew{
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    border: none;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Arial;
+    font-size: 20px;
+    padding: 5px 10px;
+    text-align: center;
+    -webkit-animation: glowing 1500ms infinite;
+    -moz-animation: glowing 1500ms infinite;
+    -o-animation: glowing 1500ms infinite;
+    animation: glowing 1500ms infinite;
+  }
+  @-webkit-keyframes glowing {
+    0% { background-color: #b29100; -webkit-box-shadow: 0 0 3px #b29100; }
+    50% { background-color:  #d6d31b; -webkit-box-shadow: 0 0 40px  #d6d31b; }
+    100% { background-color: #b29100; -webkit-box-shadow: 0 0 3px #b29100; }
+  }
+  
+  @-moz-keyframes glowing {
+    0% { background-color: #b29100; -moz-box-shadow: 0 0 3px #b29100; }
+    50% { background-color:  #d6d31b; -moz-box-shadow: 0 0 40px  #d6d31b; }
+    100% { background-color: #b29100; -moz-box-shadow: 0 0 3px #b29100; }
+  }
+  
+  @-o-keyframes glowing {
+    0% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
+    50% { background-color:  #d6d31b; box-shadow: 0 0 40px  #d6d31b; }
+    100% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
+  }
+  
+  @keyframes glowing {
+    0% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
+    50% { background-color:  #d6d31b; box-shadow: 0 0 40px  #d6d31b; }
+    100% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
+  }
+/* //image styles// */
 
   

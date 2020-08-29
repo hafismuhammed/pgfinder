@@ -43,18 +43,18 @@ class ProfileForm(forms.Form):
     profile_pic = forms.FileField(widget=forms.FileInput(), required=False)
     
 types = (
-    ('family', 'family'),
-    ('boys', 'boys'),
-    ('girls', 'girls'),
-    ('any', 'any'),
-)   
+    ("family", "Family"),
+    ('boys', "Boys"),
+    ("girls", "Girls"),
+    ("any", "Any")
+)
 
 class AccomodationForm(forms.Form):
     headline = forms.CharField(widget=forms.TextInput(), required=True)
     city = forms.CharField(widget=forms.TextInput(), required=True)
     location = forms.CharField(widget=forms.TextInput(), required=True)
     address = forms.CharField(widget=forms.TextInput())
-    type = forms.ChoiceField(choices=types, required=True )
+    types = forms.ChoiceField(choices=types, required=False)
     facilites = forms.CharField(widget=forms.Textarea(attrs={'cols':10, 
     'rows': 5,'palceholder':'facilites'}), required=True)
     rent = forms.CharField(widget=forms.TextInput(), required=True)

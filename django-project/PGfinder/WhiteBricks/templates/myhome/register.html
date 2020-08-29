@@ -8,10 +8,10 @@
             <div class="modal-body">
             <div class="my-5 p-5 pro">
                     <h5 class="text-center mb-4">Register Now</h5><hr>
-                    <div id=result></div>
                     <form action="" method="post" id="reg-form">
                         {% csrf_token %}
                         <div class="form-group">
+                            <div id="msg"></div>
                             <label>First Name</label>
                             <input type="text" class="form-control" name="first_name" placeholder="" required="">
                         </div>
@@ -68,15 +68,15 @@
                 success:function(data){
                     $("#spin").hide();
                     if(data.status == "used_username"){
-                        $("#result").html("<p class='alert alert-danger'>This username is already taken, Please enter another one</p>");
+                        $("#msg").html("<p class='alert alert-danger'>This username is already taken, Please enter another one</p>");
+                        
                     }
                     else if(data.status == "used_email"){
-                        $("#result").html("<p class='alert alert-danger'>This email is already taken, Please enter another one</p>" );
+                        $("#msg").html("<p class='alert alert-danger'>This email is already taken, Please enter another one</p>" );
                     }
                     else if(data.status == "success"){
-            
-                        $("#result").html("<p class='alert alert-success'>Succesfully created your account,Please Check your email and activate the account</p>");
-                        
+                        $("#msg").html("<p class='alert alert-success'>Succesfully created your account,Please Check your email and activate the account</p>");
+                        $("#reg-form").trigger("reset");                     
                     }
                 }
             })
@@ -84,8 +84,8 @@
     })
 
     setTimeout(function(){
-		if ($('#result').length > 0) {
-			$('#result').remove();
+		if ($('#msg').length > 0) {
+			$('#msg').remove();
 		}
 		}, 2000)
 </script>

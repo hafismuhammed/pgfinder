@@ -30,9 +30,11 @@
 		</ul>
 
 	{% if properties %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-	{% for property in properties %}
+	
 	<div class="container">
 	<div class="row">
+		<h5 class="my-3">{{ total_pro }}- Properties on Rent in the Location at PG Price</h5>
+		{% for property in properties %}
 		<div class="mx-auto">
 			<div class="modal-body">
 			<div class="p-5 pro">
@@ -58,7 +60,7 @@
 							<div id="response"></div>
 						</div>
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-3 text-center">
 						<a href="{% url 'property_details' property.id %}" target="_blank" class="btn btn-primary">details</a>
 					</div>
 				</div>
@@ -66,60 +68,10 @@
 		</div>
 	</div>
 	{% endfor %}
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	
-<script type="text/javascript">
-
-    $(document).ready(function(){
-        $("#request-btn").click(function(){
-			
-		let id = $('#property_id').val();	
-            $.ajax({
-               url: "{% url 'contact_details' %}",
-               type: "GET",
-               dataType:"json",
-               success: function(result){
-
-                $.each(result, function() {
-					$("#request-btn").hide()
-                    html =  "Email:" + this.email + "<br>" +"Mobile:" + this.mobile + "<hr>"
-                    $("#response").append(html)
-					$("#response").slideDown()
-                });
-            }
-        });
-        });
-    }); 
-
-$(document).ready(function(event){
-	$("#request-btn").click(function(event){
-		event.preventDefault();
-
-		$.ajax({
-			type:'POST',
-			url:"{% url 'notification' %}",
-			data:$('#notify_form').serialize(),
-		/*	data:{
-				owner: $("#request-btn").val(),
-				property: $("#property").val(),
-				csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoke]'),
-			},*/
-			dataType:'Json',
-			success:function(data){
-				if(data.msg == "success"){
-					console.log('notification sented')
-				}
-			}
-
-		});
-	});
-});
-
-</script>
     {% else %}
     <div class="jumbotron">
-		<h1 class="display-4 text-center">Sorry, Not Fount !!! </h1>
-		<p class="lead text-center">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+		<h1 class="display-4 text-center">Sorry, No houses found !!! </h1>
+		<p class="lead text-center">We couldn’t find any homes for the filters you have applied.Try Changing The Filters</p>
 		<hr class="my-4">
 		<p class="text-center">It uses utility classes for typography and spacing to space content out within the larger container.</p>
 	  </div>

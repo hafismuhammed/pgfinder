@@ -83,7 +83,7 @@
                                                 <h4>Monthly rent</h4>
                                         </div>
                                         <div class="col-md-6 text-right">
-                                                <h4 class="text-right">{{ property.rent }}</h4>
+                                             <h4 class="text-right">{{ property.rent }}</h4>
                                         </div>
                                 </div>
                                 <div class="row py-3">
@@ -137,7 +137,7 @@
 		    $("#request-btn").hide()
                     html = "<h6>Contact me" + "<br>" + "Email:" + this.email + "<br>" +"Mobile:" + this.mobile + "<hr>"
                     $("#response").append(html)
-					$("#response").slideDown()
+				
                 });
             }
         });
@@ -161,8 +161,7 @@ $(document).ready(function(event){
 			success:function(data){
                                 if(data.authenticated){
                                         if(data.msg == "success"){
-                                                //console.log('notification sented')
-                                                alert('sent')
+                                                console.log('notification sented')
                                         }
                                 }
                                 else{

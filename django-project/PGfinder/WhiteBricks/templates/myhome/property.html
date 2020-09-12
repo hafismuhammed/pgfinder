@@ -22,35 +22,11 @@
 			</div>
 			{% if messages %}
     		{% for message in messages %}
-    		<div class="alert alert-success" id="msg" role="alert">
+    		<div class="alert alert-success text-center" id="msg" role="alert">
 				{{ message }}
     		</div>
     		{% endfor %}
 			{% endif %} 
-			<ul class="portfolio-categ filter mb-5 pb-4 text-center border-bottom">
-				<li class="port-filter all active">
-					<a href="{% url 'new_property' %}">Add property</a>
-				</li>
-				<li class="cat-item-1">
-					<a href="#" title="Category 1">Bedroom</a>
-				</li>
-				<li class="cat-item-2">
-					<a href="#" title="Category 2">Bathroom</a>
-				</li>
-				<li class="cat-item-3">
-					<a href="#" title="Category 3">Kitchen</a>
-				</li>
-				<li class="cat-item-4">
-					<a href="#" title="Category 4">Living Room</a>
-				</li>
-				<li class="cat-item-5">
-					<a href="#" title="Category 5">Office</a>
-				</li>
-				<li class="cat-item-6">
-					<a href="#" title="Category 6">Pool</a>
-				</li>
-			</ul>
-
 			<h5 class="mx-5">{{ total_pro }}- Your own Property</h5>
 		{% for property in properties %}
 		<div class="container">
@@ -60,9 +36,9 @@
 					<div class="p-5 pro">
 						<div class="row">
 							<div class="col-md-4">
-								<div class="inner">
-									<div class="badge badge-secondary p">{{ property.types }}</div>
-									<img src="{{ property.images.url }}" class="img-fluid">
+								<div class="item">
+									<span class="pro-badge">{{ property.types }}</span>
+										<img src="{{ property.images.url }}" class="img-fluid" style="height: auto;">
 								</div>
 							</div>
 							<div class="col-md-5">
@@ -130,20 +106,91 @@
 </div>
 </div>
 		{% endfor %}
+		<!--paginator-->
+			<div class="row my-3">
+				<div class="mx-auto">
+				<nav aria-label="Page navigation example">
+					<ul class="pagination">
+					{% if properties.has_previous %}
+					<li class="page-item">
+						<a class="page-link" href="?page={{ properties.previous_page_number }}" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>
+					{% endif %}
+					<li class="page-item"><a class="page-link" href="#">{{ properties.number }}</a></li>
+					{% if properties.has_next %}
+					<li class="page-item">
+						<a class="page-link" href="?page={{ properties.next_page_number }}" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>
+					{% endif %}
+					</ul>
+				</nav>
+				</div>
+			</div>
+			<!--//paginator-->
+
 		{% else %}
 		<div class="text-center mb-lg-5 mb-4">
 			<h3 class="tittle mb-2">Add your first property</h3>
 			<p>Find your gust</p>
 		</div>
 		<div class="jumbotron">
-			<h1 class="display-4">Hi, {{ user.first_name }}</h1>
-			<p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+			<h1 class="display-4 text-center">Hi, {{ user.first_name }}</h1>
+			<p class="lead text-center">Add Your Property Here, Your Property is our Responsibility</p>
 			<hr class="my-4">
-			<p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-			<a class="btn btn-primary btn-lg" href="{% url 'new_property' %}" role="button">Add Property</a>
+			<div class="text-center">
+			<a class="btn btn-dark btn-lg text-center" href="{% url 'new_property' %}" role="button">Add Property</a>
+			<h3 class="my-3">How WhiteBricks different ?</h3>
+			<div class="container">
+				<div class="row mx-auto">
+					<div class="col-md-4">
+						<div class="card mx-3">
+							<div class="card-header">
+								<h4>Property Security</h4>
+							</div>
+							<div class="card-body">
+								<div class="secure">
+									<i class="fas fa-shield-alt"></i>
+								</div>
+							  <p class="card-text">We ensure to keep your house in good condition.</p>
+							</div>
+						  </div>
+					</div>
+					<div class="col-md-4">
+						<div class="card mx-3">
+							<div class="card-header">
+								<h4>Rent On Time</h4>
+							</div>
+							<div class="card-body">
+								<div class="secure">
+									<i class="fas fa-hourglass-start"></i>
+								</div>
+							  <p class="card-text">We guarantee rent on time every month</p>
+							</div>
+						  </div>
+					</div>
+					<div class="col-md-4">
+						<div class="card mx-3">
+							<div class="card-header">
+								<h4>Zero Paperwork</h4>
+							</div>
+							<div class="card-body">
+								<div class="secure">
+									<i class="far fa-sticky-note"></i>
+								</div>
+							  <p class="card-text">We do the paperwork for you like agreement creation</p>
+							</div>
+						  </div>
+					</div>
+				</div>
+			</div>
+			</div>
 		  </div>
 		{% endif %}
-			<!--end property-area -->
+			<!--// property-area -->			
 		</div>
 		<!-- //property container -->
 	</section>
@@ -151,9 +198,9 @@
 	<script>
 		setTimeout(function(){
 		if ($('#msg').length > 0) {
-			$('#msg').remove();
+			$('#msg').fadeOut('slow');
 		}
-		}, 2000)
+		}, 1000)
 	</script>
 	
 

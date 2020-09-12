@@ -26,12 +26,11 @@
                                 <div class="modal-body">
                                 <div class="p-5 pro">
                                         <div class="row">
-                                                        <img src="{{ property.images.url }}" class="img-fluid ProImg">
+                                                <img src="{{ property.images.url }}" class="img-fluid ProImg">
                                         </div>
                                 </div>
                         </div>
                 </div>
-               <!-- <div class="mx-auto">-->
                         <div class="modal-body">
                         <div class="p-5 pro">
                                 <div class="row">
@@ -95,28 +94,22 @@
                                                 <h4 class="text-right">{{ property.deposite }}</h4>
                                         </div>
                                 </div>
-                                <input type="hidden" name="id" value="{{ property.id }}" id="property_id" >
                                 <div class="row py-5">
                                         <div class="col-md-6 text-left">
                                         <h4>For more details & Booking </h4>
-                                        <div id="response"></div>
+                                        <div id="details"></div>
                                         </div>
                                         <div class="col-md-6 text-right">
-                                        <form action="" method="post" id="notify_form" >
-                                                {% csrf_token %}
-                                                <input type="hidden" name="owner_id" value="{{ property.email }}" id="pro_email">
-                                                <input type="hidden" name="property" value="{{ property.mobile }}" id="pro_mobile">
-                                                <input type="hidden" name="owner_id" value="{{ property.owner }}" id="property" >
-                                                <input type="hidden" name="property" value="{{ property.id }}" id="property_id" >
-                                                <button type="button" id="request-btn" class="btn btn-primary">Contact info:</button>
-                                        </form>
+                                                <form action="" method="get" id="notify_form" >
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="owner_id" value="{{ property.owner }}" id="property" >
+                                                        <input type="hidden" name="property" value="{{ property.id }}" id="property_id" >
+                                                        <button type="submit" id="request-btn" class="btn btn-primary">Contact info:</button>
+                                                </form>
                                         </div>
                                 </div>
                         </div>
                 </div>
-       <!-- </div>-->
-
-
         {% endif %}
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -124,21 +117,20 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $("#request-btn").click(function(){
-			
-		let id = $('#property_id').val();	
+				
             $.ajax({
                url: "{% url 'contact_details' %}",
                type: "GET",
-             //  data: $('#notify_form').serialize(),
+               data: { property: "{{ property.id }}" },
                dataType:"json",
-               success: function(result){
-
-                $.each(result, function() {
-		    $("#request-btn").hide()
-                    html = "<h6>Contact me" + "<br>" + "Email:" + this.email + "<br>" +"Mobile:" + this.mobile + "<hr>"
-                    $("#response").append(html)
-				
-                });
+               success: function(data){
+                        if(data.authenticated){
+                                $("#request-btn").hide();
+                                $("#details").html("<h6>Contact me" + "<br>" + "Email:" + data.email + "<br>" +"Mobile:" + data.mobile + "<hr>")
+                        }
+                        else{
+                                window.location.href = "{% url 'login' %}"    
+                        }
             }
         });
         });
@@ -152,11 +144,6 @@ $(document).ready(function(event){
 			type:'POST',
 			url:"{% url 'notification' %}",
 			data:$('#notify_form').serialize(),
-		/*	data:{
-				owner: $("#request-btn").val(),
-				property: $("#property").val(),
-				csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoke]'),
-			},*/
 			dataType:'Json',
 			success:function(data){
                                 if(data.authenticated){

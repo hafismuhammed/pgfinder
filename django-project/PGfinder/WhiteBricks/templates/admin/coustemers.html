@@ -1,0 +1,73 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block content %}
+<!-- banner-text -->
+<div class="banner-w3ltext about-w3bnr">
+	<div class="container">
+		<h1 class="text-white text-center">
+			<a href="{% url 'home' %}">Home</a> / Coustemers</h1>
+	</div>
+</div>
+<!-- //banner-text -->
+</div>
+<!-- //banner -->
+<!--Coustemers-->
+<section class="wthree-row w3-gallery py-5">
+	<div class="container-fluid py-xl-5 py-lg-3">
+		<div class="text-center mb-lg-5 mb-4">
+			<h3 class="tittle mb-2">Coustemers</h3>
+        </div>
+        {% if coustemers %}
+        
+            <div class="mx-5">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for coust in coustemers %}
+                    <tr>
+                        <td>{{ coust.first_name }} {{ coust.last_name }}</td>
+                        <td>{{ coust.email }}</td>
+                        <td><a href="#" class="btn btn-primary">view info:</a></td>
+                    </tr>
+                    {% endfor %}  
+                    </tbody>
+                </table>
+            </div>
+          
+          {% endif %}
+
+           <!--paginator-->
+      <div class="row my-3">
+        <div class="mx-auto">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+            {% if coustemers.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ coustemers.previous_page_number }}" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+            {% endif %}
+              <li class="page-item"><a class="page-link" href="#">{{ coustemers.number }}</a></li>
+            {% if coustemers.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ coustemers.next_page_number }}" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </div>
+        <!--//paginator-->
+
+    </div>
+</section>
+{% endblock %}

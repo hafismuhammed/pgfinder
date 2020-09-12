@@ -134,19 +134,21 @@
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
 									<a class="nav-link" href="{% url 'about' %}">About Us</a>
 								</li>
+								{% if request.user.is_staff %}
 								<li class="nav-item dropdown">
 									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
 									    aria-expanded="false">
-										Dropdown
+										Admin
 									</a>
 									<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-										<a class="dropdown-item scroll" href="#services">Services</a>
-										<a class="dropdown-item scroll" href="#pricings">Pricings</a>
+										<a class="dropdown-item" href="{% url 'admin_panel' %}">Admin panel</a>
+										<a class="dropdown-item" href="{% url 'admin_msg' %}">Message to user</a>
 										<div class="dropdown-divider"></div>
-										<a class="dropdown-item scroll" href="#clients">Clients</a>
+										<a class="dropdown-item" href="#clients">Clients</a>
 										<a class="dropdown-item" href="{% url 'about' %}">Our Agents</a>
 									</div>
 								</li>
+								{% endif %}
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
 									<a class="nav-link" href="{% url 'my_property' %}">Portfolio</a>
 								</li>
@@ -318,7 +320,7 @@
 
 		setTimeout(function(){
 		if ($('#msg').length > 0) {
-			$('#msg').remove();
+			$('#msg').fadeOut('slow');
 		}
 		}, 2000)
 	

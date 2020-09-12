@@ -1,13 +1,24 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from functools import wraps
-'''
-def ajax_login_required(view_func):
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
+
+def unauthenticated_user(view_func):
+    def wrapper_function(request, *args, **kwargs):
         if request.user.is_authenticated:
+            return redirect('/whitebricks/home/')
+        else:
             return view_func(request, *args, **kwargs)
-        json = simplejson.dumps({'not_authenticated': True})
-        #return HttpResponse(json, mimetype='application/json')
-        return redirect('/whitebricks/login/')
-    return wrapper'''
+    return wrapper_function
+
+
+
+def admin_only(view_func):
+    def wrapper_function(request, *args, **kwargs):
+        group = None
+        if request.user.groups.exists():
+            group = request.user.groups.all()[0].name
+
+        if group == 'admin':
+            return view_func(request, *args, **kwargs)
+        else:
+            return HttpResponse('only admin has axcess')
+    return wrapper_function

@@ -89,6 +89,9 @@
 								<div class="col-2 header-loginw3ls text-lg-right text-center">
 									<a href="{% url 'view_notification' %}" id="tooltip">
 										<i class="far fa-bell"></i>
+										{% if notification_count %}
+											<span class="badge">{{ notification_count }}</span>
+										{% endif %}
 										<span class="tooltiptext">Notification</span>
 									</a>
 								</div>
@@ -137,21 +140,20 @@
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
 									<a class="nav-link" href="{% url 'about' %}">About Us</a>
 								</li>
+								{% if request.user.is_staff %}
 								<li class="nav-item dropdown">
 									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
 									    aria-expanded="false">
-										Dropdown
+										Admin
 									</a>
 									<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-										<a class="dropdown-item" href="{% url 'about' %}">Services</a>
-										<a class="dropdown-item" href="{% url 'home' %}">Pricings</a>
-										<div class="dropdown-divider"></div>
-										<a class="dropdown-item" href="{% url 'home' %}">Clients</a>
-										<a class="dropdown-item" href="{% url 'about' %}">Our Agents</a>
+										<a class="dropdown-item" href="{% url 'admin_panel' %}">Admin panel</a>
+										<a class="dropdown-item" href="{% url 'admin_msg' %}">Message to user</a>
 									</div>
 								</li>
+								{% endif %}
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
-									<a class="nav-link" href="{% url 'my_property' %}">Portfolio</a>
+									<a class="nav-link" href="{% url 'my_property' %}">Property</a>
 								</li>
 								<li class="nav-item active">
 									<a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
@@ -252,11 +254,11 @@
 						<div class="mt-5" id="spin" style="display: none;">
 							<div class="loader"></div>
 						</div>
-						<div id="msg"></div>
 					</div>
 				</div>
 				<!-- //contact form -->
 			</div>
+			<div id="msg"></div>
 		</div>
 	</section>
 	<!-- //contact -->
@@ -378,23 +380,9 @@
 	<script src="{% static 'myhome/js/bootstrap.js' %}"></script>
 	<!-- Necessary-JavaScript-File-For-Bootstrap -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<!-- password-script -->
+	<!--contact message-->
 	<script>
-		window.onload = function () {
-			document.getElementById("password1").onchange = validatePassword;
-			document.getElementById("password2").onchange = validatePassword;
-		}
-
-		function validatePassword() {
-			var pass2 = document.getElementById("password2").value;
-			var pass1 = document.getElementById("password1").value;
-			if (pass1 != pass2)
-				document.getElementById("password2").setCustomValidity("Passwords Don't Match");
-			else
-				document.getElementById("password2").setCustomValidity('');
-			//empty string means no validation error
-		}
-
+		
 		$(document).ready(function(){
 			$(document).on("submit", "#email-form", function(event){
 				event.preventDefault();
@@ -406,20 +394,17 @@
 					data: $("#email-form").serialize(),
 					success: function(data){
 						$("#spin").hide();
-						if(data.status == "success"){
-							$("#msg").html("<p class='alert alert-success'>we will get back to you as soon as possible</p>" );
+					 	if(data.status == "success"){
+							$("#msg").html("<p class='alert alert-success text-center'>we will get back to you as soon as possible</p>" );
 							$("#email-form").trigger("reset");
+							setTimeout(function(){
+								$("#msg").fadeOut('slow');
+							}, 2000)
 						}
 					}
 				})
 			})
 		})
-
-		setTimeout(function(){
-		if ($('#msg').length > 0) {
-			$('#msg').remove();
-		}
-		}, 5000)
 	</script>
 	<!-- //password-script -->
 

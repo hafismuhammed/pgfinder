@@ -10,12 +10,26 @@
 .inner:hover img{
     transform: scale(1.5);
 }
-.badge{
+
+.item {
+  position:relative;
+  padding-top:20px;
+  display:inline-block;
+}
+.pro-badge{
   position: absolute;
-  right: 260px;
-  top: 10px;
-  padding: 5px 10px;
-  font-size: 20px;
+  left:-20px;
+  top:10px;
+  background:#4e3d3d;
+  text-align: center;
+  border-radius: 30px 30px 30px 30px;
+  color:white;
+  padding:5px 10px;
+  font-size:20px;
+}
+.pro-img{
+  width: 1000px;
+  height: 150px;
 }
 /* // image styles */
 
@@ -23,13 +37,13 @@
 #tooltip {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
+    border-bottom: 1px dotted #000000;
   }
   
   #tooltip .tooltiptext {
     visibility: hidden;
     width: 120px;
-    background-color: black;
+    background-color: #000000;
     color: #fff;
     text-align: center;
     border-radius: 6px;
@@ -55,6 +69,10 @@
   #tooltip:hover .tooltiptext {
     visibility: visible;
   }
+
+  #tooltip .badge{
+    background-color: #ff0000;
+  }
 /* // header modification  */
 
 /* loading animations */
@@ -73,7 +91,9 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-  /* //loaging animation  */
+  /* //loading animation  */
+
+  /* add property button */
   .pro{
     box-shadow: 0px 0px 10px #000000;
   }
@@ -145,21 +165,22 @@
   .mail, .phn, .adrs{
     font-size:20px
   }
+   /* //add property button */
 
   /* aditional nav */
   #newslide {
-	  background-color: whitesmoke;
+	  background-color: #f5f5f5;
 	  position: fixed;
-	  top: -100px;
+	  top: -270px;
 	  width: 100%;
 	  display: block;
-	  transition: top 0.3s;
+	  transition: top 0.5s;
 	}
 	
 	#newslide a {
 	  font-weight: bold;
 	  display: block;
-	  color: black;
+	  color: #000000;
 	  text-align: center;
 	  padding: 15px;
 	  text-decoration: none;
@@ -168,7 +189,7 @@
 	
 	#newslide a:hover {
 	  background-color: #ddd;
-	  color: black;
+	  color: #000000;
 	}
 
 	.addNew{
@@ -210,6 +231,16 @@
     50% { background-color:  #d6d31b; box-shadow: 0 0 40px  #d6d31b; }
     100% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
   }
-/* //image styles// */
+  #filter {
+    -moz-transition: transform 1s;
+    -webkit-transition: transform 1s;
+    transition: transform 1s;
+    }
+    
+    .flip {
+    transform: rotate(-180deg);
+    }
+/* //aditonal nav  */
+
 
   

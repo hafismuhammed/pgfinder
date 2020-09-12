@@ -1,14 +1,7 @@
 from django import forms
 from django.forms import ModelForm
-from django.contrib.auth.forms import UserCreationForm
 from WhiteBricks.models import User, Property, Profile
 
-class RegistraionForm(UserCreationForm):
-    email = forms.EmailField(max_length=150)
-
-    class Meta:
-        model = User
-        fields = ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')
 
 class LoginForm(forms.Form):
     username = forms.CharField(widget=forms.TextInput())
@@ -26,8 +19,9 @@ class PasswordChangeForm(forms.Form):
         model = User
 
 gender = (
+    ("---", "---"),
     ("M", "Male"),
-    ("F", "Femle"),
+    ("F", "Female"),
 )
 
 class ProfileForm(forms.Form):
@@ -43,6 +37,7 @@ class ProfileForm(forms.Form):
     profile_pic = forms.FileField(widget=forms.FileInput(), required=False)
     
 types = (
+    ("---", "---"),
     ("family", "Family"),
     ('boys', "Boys"),
     ("girls", "Girls"),

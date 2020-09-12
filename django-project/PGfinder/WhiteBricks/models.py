@@ -38,7 +38,7 @@ class Property(models.Model):
     facilites = models.TextField()
     rent = models.CharField(max_length=200)
     deposite = models.CharField(max_length=100, null=True)
-    images = models.FileField(upload_to='media/uploads',null=True)
+    images = models.FileField(upload_to='media/uploads', null=True)
     email = models.EmailField()
     mobile = models.IntegerField(null=True)
     date = models.DateTimeField(auto_now_add=True)
@@ -53,6 +53,7 @@ class Notifications(models.Model):
     property = models.ForeignKey(Property, null=True, blank=True,on_delete=models.CASCADE)
     notification = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+    is_seen = models.BooleanField(default=False)
 
     def __str_(self):
         return self.notification

@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="zxx">
+{% load static %}
 
 <head>
 	<title>WhiteBricks Real Estates Category Bootstrap Responsive website Template | About Us :: WhiteBricks</title>
@@ -19,9 +20,20 @@
 		}
 	</script>
 	<!--// Meta tag Keywords -->
-
+	<style>
+	.form-control-feedback {
+		position: absolute;
+		z-index: 2;
+		display: block;
+		width: 2.375rem;
+		height: 2.375rem;
+		line-height: 2.375rem;
+		text-align: center;
+		pointer-events: none;
+		color: #aaa;
+	}
+	</style>
 	<!-- Custom-Files -->
-	{% load static %}
 	<link rel="stylesheet" href="{% static 'myhome/css/bootstrap.css' %}">
 	<!-- Bootstrap-Core-CSS -->
 	<!-- team deoslide -->
@@ -90,6 +102,9 @@
 								<div class="col-2 header-loginw3ls text-lg-right text-center">
 									<a href="{% url 'view_notification' %}" id="tooltip">
 										<i class="far fa-bell"></i>
+										{% if notification_count %}
+											<span class="badge">{{ notification_count }}</span>
+										{% endif %}
 										<span class="tooltiptext">Notification</span>
 									</a>
 								</div>
@@ -138,21 +153,20 @@
 								<li class="nav-item  active mx-xl-4 mx-lg-3 my-lg-0 my-3">
 									<a class="nav-link" href="{% url 'about' %}">About Us</a>
 								</li>
+								{% if request.user.is_staff %}
 								<li class="nav-item dropdown">
 									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
 									    aria-expanded="false">
-										Dropdown
+										Admin
 									</a>
 									<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-										<a class="dropdown-item scroll" href="#services">Services</a>
-										<a class="dropdown-item scroll" href="#pricings">Pricings</a>
-										<div class="dropdown-divider"></div>
-										<a class="dropdown-item scroll" href="#clients">Clients</a>
-										<a class="dropdown-item scroll" href="#agents">Our Agents</a>
+										<a class="dropdown-item" href="{% url 'admin_panel' %}">Admin panel</a>
+										<a class="dropdown-item" href="{% url 'admin_msg' %}">Message to user</a>
 									</div>
 								</li>
+								{% endif %}
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
-									<a class="nav-link" href="{% url 'my_property' %}">Portfolio</a>
+									<a class="nav-link" href="{% url 'my_property' %}">Property</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
@@ -372,7 +386,7 @@
 	<section class="pricing py-5" id="pricings">
 		<div class="container py-xl-5 py-lg-3">
 			<div class="text-center mb-lg-5 mb-4">
-				<h3 class="tittle mb-2 text-white">Our Pricings</h3>
+				<h3 class="tittle mb-2 text-white">Designed for everyone</h3>
 				<p class="test-title-paara">A few word about our Planes</p>
 			</div>
 			<div class="inner-sec">
@@ -380,69 +394,48 @@
 					<div class="price-info-grid col-lg-4">
 						<div class="price-inner">
 							<div class="price-header">
-								<h4>Starter</h4>
+								<h4>Homes for Families</h4>
 							</div>
 							<div class="price-body">
-								<h5 class="pricing-title">
-									<span class="dolor">$</span> 789.00
-									<label>Per Month</label>
+								<img src="{% static 'myhome/images/family.png' %}" class="img-fluid" style="height: 150px;">
 
-								</h5>
-
-								<ul class="list-unstyled mt-3 mb-4">
-									<li class="py-2 border-bottom">Advertising</li>
-									<li class="py-2 border-bottom">Branding Services</li>
-									<li class="py-2 border-bottom">Online Marketing</li>
-									<li class="py-2 border-bottom">Creative Marketing</li>
-									<li class="py-2">-</li>
-								</ul>
-								<a href="#" class="btn btn-block py-2" data-toggle="modal" data-target="#exampleModalCenter2">
-									<i class="far fa-user"></i> Get Started</a>
+								<h6 class="py-5">Rent a beautiful house for your family. Choose from flats in societies, individual apartments & villas</h6>
+								<form method="GET" action="{% url 'property_type' %}">
+									<button type="submit" name="types" value="family" class="btn btn-block btn-outline-primary py-2">
+										<i class="far fa-user"></i> Explore Houses</button>
+								</form>
 							</div>
 						</div>
 					</div>
 					<div class="price-info-grid col-lg-4 my-lg-0 my-3">
 						<div class="price-inner">
 							<div class="price-header">
-								<h4>Professional</h4>
+								<h4>Homes for Friends</h4>
 							</div>
 							<div class="price-body">
-								<h5 class="pricing-title">
-									<span class="dolor">$</span>1089.00
-									<label>Per Month</label>
-								</h5>
-								<ul class="list-unstyled mt-3 mb-4">
-									<li class="py-2 border-bottom">Advertising</li>
-									<li class="py-2 border-bottom">Branding Services</li>
-									<li class="py-2 border-bottom">Online Marketing</li>
-									<li class="py-2 border-bottom">Creative Marketing</li>
-									<li class="py-2">-</li>
-								</ul>
-								<a href="#" class="btn btn-block btn-outline-primary py-2" data-toggle="modal" data-target="#exampleModalCenter2">
-									<i class="far fa-user"></i> Get Started</a>
+								<img src="{% static 'myhome/images/f.png' %}" class="img-fluid" style="height: 150px;">
+								
+								<h6 class="py-5">Rent a bachelor friendly house with your friends. Choose from flats in societies, individual apartments & villas</h6>
+								<form method="GET" action="{% url 'property_type' %}">
+									<button type="submit" name="types" value="boys" class="btn btn-block btn-outline-primary py-2">
+									<i class="far fa-user"></i> Explore Houses</button>
+								</form>
 							</div>
 						</div>
 					</div>
 					<div class="price-info-grid col-lg-4">
 						<div class="price-inner">
 							<div class="price-header">
-								<h4>Enterprise</h4>
+								<h4>Homes for any</h4>
 							</div>
 							<div class="price-body">
-								<h5 class="pricing-title">
-									<span class="dolor">$</span>2189.00
-									<label>Per Month</label>
-
-								</h5>
-								<ul class="list-unstyled mt-3 mb-4">
-									<li class="py-2 border-bottom">Advertising</li>
-									<li class="py-2 border-bottom">Branding Services</li>
-									<li class="py-2 border-bottom">Online Marketing</li>
-									<li class="py-2 border-bottom">Creative Marketing</li>
-									<li class="py-2">-</li>
-								</ul>
-								<a href="#" class="btn btn-block btn-outline-primary py-2" data-toggle="modal" data-target="#exampleModalCenter2">
-									<i class="far fa-user"></i> Get Started</a>
+								<img src="{% static 'myhome/images/any.png' %}" class="img-fluid" style="height: 150px;">
+								
+								<h6 class="py-5">Rent a beautiful house for any type people. Choose from flats in societies, individual apartments & villas</h6>
+								<form method="GET" action="{% url 'property_type' %}">
+									<button type="submit" name="types" value="any" class="btn btn-block btn-outline-primary py-2">
+										<i class="far fa-user"></i> Explore Houses</button>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -451,7 +444,7 @@
 		</div>
 	</section>
 	<!-- //pricing -->
-
+	
 	<!-- services -->
 	<div class="what-w3ls py-5" id="services">
 		<div class="container py-xl-5 py-lg-3">
@@ -638,6 +631,69 @@
 
 			</div>
 		</div>
+
+		<!--new slide down nav-->
+		<div id="newslide">
+			<div class="row">
+			<div class="col-md-2" >
+				<a class="navbar-brand" href="#" style="font-size: 35px;">WhiteBricks
+					<span>Real Property</span>
+				</a>
+			</div>
+			<div class="col-md-7">
+			<form action="{% url 'search' %}" method="get">
+				<div class="row">
+					
+					<div class="col-sm-9 offset-sm-1  col-10 place-grid mt-sm-0 my-3">
+						<div>
+							<input type="search" name="search" placeholder="search property..." class="sel" style="border:2px solid black " required>
+						</div>
+					</div>
+				</div>
+					
+				</div>
+			</form>
+			<div class="col-md-3 my-3">
+				<a href="{% url 'new_property' %}" class="btn btn-warning addNew"><strong>Add Property ></strong></a>
+			</div>
+		</div>
+
+		<div class="row text-center">
+			<div class=" col-md-4 offset-md-4">
+		<i class="fas fa-chevron-down" id="filter" style="color: black;"></i>
+		</div>
+		</div>
+		
+		<div id="filter-item" style="display: none;">
+			<div class="row">
+				<h4 class="mx-5" style="padding-bottom: 20px;">For</h4><br>
+			</div>
+			<div class="row text-center mx-5" style="padding-bottom: 10px;">
+				<form  method="GET" action="{% url 'property_type' %}" class="form-inline mx-3">
+					<button class="btn btn-outline-dark my-2 my-sm-0" name="types" value="family" type="submit">Family</button>
+					</form>
+				
+				
+				<form method="GET" action="{% url 'property_type' %}" class="form-inline mx-3">
+					<button class="btn btn-outline-dark my-2 my-sm-0" name="types" value="boys" type="submit">Boys</button>
+					</form>
+				
+				
+				<form method="GET" action="{% url 'property_type' %}" class="form-inline mx-3">
+					<button class="btn btn-outline-dark my-2 my-sm-0" name="types" value="girls" type="submit">Girls</button>
+					</form>
+				
+				
+				<form method="GET" action="{% url 'property_type' %}" class="form-inline mx-3">
+					<button class="btn btn-outline-dark my-2 my-sm-0" name="types" value="any"  type="submit">Any</button>
+					</form>
+				
+			</div>
+		
+			</div>
+		</div>
+	<!--//new slide down nav-->
+
 	</div>
 	<!-- //testimonials -->
 
@@ -773,25 +829,6 @@
 	</script>
 	<!-- //flexSlider (for testimonials) -->
 
-	<!-- password-script -->
-	<script>
-		window.onload = function () {
-			document.getElementById("password1").onchange = validatePassword;
-			document.getElementById("password2").onchange = validatePassword;
-		}
-
-		function validatePassword() {
-			var pass2 = document.getElementById("password2").value;
-			var pass1 = document.getElementById("password1").value;
-			if (pass1 != pass2)
-				document.getElementById("password2").setCustomValidity("Passwords Don't Match");
-			else
-				document.getElementById("password2").setCustomValidity('');
-			//empty string means no validation error
-		}
-	</script>
-	<!-- //password-script -->
-
 	<!-- team desoslide-JavaScript -->
 	<script src="{% static 'myhome/js/jquery.desoslide.js' %}"></script>
 	<script>
@@ -803,6 +840,24 @@
 			effect: 'sideFade',
 			caption: true
 		});
+
+		//  slide down the navbar
+		window.onscroll = function() {scrollFunction()};
+
+		function scrollFunction() {
+			if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+				document.getElementById("newslide").style.top = "0";
+			} else {
+				document.getElementById("newslide").style.top = "-500px";
+			}
+		}
+
+		$(document).ready(function(){
+		$("#filter").click(function(){
+			$("#filter").toggleClass('flip');
+			$("#filter-item").toggle('slow');
+		});
+	});	
 	</script>
 	<!-- //team desoslide-JavaScript -->
 

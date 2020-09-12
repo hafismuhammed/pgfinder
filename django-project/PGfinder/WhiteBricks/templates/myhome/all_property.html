@@ -21,14 +21,7 @@
 			<p>See your choice</p>
 		</div>
 		{% if properties %}
-		<ul class="portfolio-categ filter mb-5 pb-4 text-center border-bottom">
-			<li>
-				<form action="{% url 'search' %}" class="form-inline">
-					<input class="form-control mr-sm-2" type="search" name="search" size="80" placeholder="Search..." aria-label="Search">
-					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-				  </form>
-			</li>
-		</ul>
+		<h5 class="mx-5">{{ total_pro }}- Properties on Rent in the Location at PG Price</h5>
 		<div class="container">
 			<div class="row">
 				{% for property in properties %}
@@ -37,9 +30,9 @@
 					<div class="p-5 pro">
 						<div class="row">
 							<div class="col-md-4">
-								<div class="inner">
-									<div class="badge badge-secondary p">{{ property.types }}</div>
-								<img src="{{ property.images.url }}" class="img-fluid">
+								<div class="item">
+									<span class="pro-badge">{{ property.types }}</span>
+										<img src="{{ property.images.url }}" class="img-fluid pro-img">
 								</div>
 							</div>
 							<div class="col-md-5">
@@ -70,13 +63,125 @@
 				<h1 class="display-4 text-center">Sorry, No houses found !!! </h1>
 				<p class="lead text-center">We couldn’t find any homes for the filters you have applied.Try Changing The Filters</p>
 				<hr class="my-4">
-				<p class="text-center">It uses utility classes for typography and spacing to space content out within the larger container.</p>
 			  </div>
 			{% endif %}
 		</div>
 		</div>
 		<!-- //search result container -->
+		<!--paginator-->
+		<div class="row my-3">
+			<div class="mx-auto">
+			  <nav aria-label="Page navigation example">
+				<ul class="pagination">
+				{% if properties.has_previous %}
+				  <li class="page-item">
+					<a class="page-link" href="?page={{ properties.previous_page_number }}" aria-label="Previous">
+					  <span aria-hidden="true">&laquo;</span>
+					</a>
+				  </li>
+				{% endif %}
+				  <li class="page-item"><a class="page-link" href="#">{{ properties.number }}</a></li>
+				{% if properties.has_next %}
+				  <li class="page-item">
+					<a class="page-link" href="?page={{ properties.next_page_number }}" aria-label="Next">
+					  <span aria-hidden="true">&raquo;</span>
+					</a>
+				  </li>
+				{% endif %}
+				</ul>
+			  </nav>
+			</div>
+		  </div>
+			<!--//paginator-->
+		</div>
 		</section>
 		<!-- //search result -->
+
+		<!--new slide down nav-->
+<div id="newslide">
+	<div class="row">
+	<div class="col-md-2" >
+		<a class="navbar-brand" href="#" style="font-size: 35px;">WhiteBricks
+			<span>Real Property</span>
+		</a>
+	</div>
+	<div class="col-md-7">
+	<form action="{% url 'search' %}" method="get">
+		<div class="row">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-9 col-10 place-grid mt-sm-0 my-3">
+				
+				<div>
+					<input type="search" name="search" placeholder="search property..." class="sel" style="border:2px solid black " required>
+				</div>
+			</div>
+			</div>
+			
+		</div>
+	</form>
+	<div class="col-md-3 my-3">
+		<a href="{% url 'new_property' %}" class="btn btn-warning addNew"><strong>Add Property ></strong></a>
+	</div>
+</div>
+
+<div class="row text-center">
+	<div class=" col-md-4 offset-md-4">
+  <i class="fas fa-chevron-down" id="filter" style="color: black;"></i>
+  </div>
+</div>
+
+<div id="filter-item" style="display: none;">
+	<div class="row">
+		<h4 class="mx-5" style="padding-bottom: 20px;">For</h4><br>
+	</div>
+	  <div class="row text-center mx-5" style="padding-bottom: 10px;">
+		  <form  method="GET" action="{% url 'property_type' %}" class="form-inline mx-3">
+			  <button class="btn btn-outline-dark my-2 my-sm-0" name="types" value="family" type="submit">Family</button>
+			</form>
+		
+		
+		  <form method="GET" action="{% url 'property_type' %}" class="form-inline mx-3">
+			  <button class="btn btn-outline-dark my-2 my-sm-0" name="types" value="boys" type="submit">Boys</button>
+			</form>
+		
+		
+		  <form method="GET" action="{% url 'property_type' %}" class="form-inline mx-3">
+			  <button class="btn btn-outline-dark my-2 my-sm-0" name="types" value="girls" type="submit">Girls</button>
+			</form>
+		
+		
+		  <form method="GET" action="{% url 'property_type' %}" class="form-inline mx-3">
+			  <button class="btn btn-outline-dark my-2 my-sm-0" name="types" value="any"  type="submit">Any</button>
+			</form>
+		
+	</div>
+
+	</div>
+</div>
+<!--//new slide down nav-->
+
+<!-- //search result -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+//  slide down the navbar
+		window.onscroll = function() {scrollFunction()};
+
+		function scrollFunction() {
+			if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+				document.getElementById("newslide").style.top = "0";
+			} else {
+				document.getElementById("newslide").style.top = "-500px";
+			}
+		}
+
+		$(document).ready(function(){
+		$("#filter").click(function(){
+			$("#filter").toggleClass('flip');
+			$("#filter-item").toggle('slow');
+		})
+	})	
+	</script>
+   
 		   
 		{% endblock %}

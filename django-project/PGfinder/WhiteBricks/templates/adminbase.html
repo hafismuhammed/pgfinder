@@ -152,10 +152,10 @@
 								</li>
 								{% endif %}
 								<li class="nav-item  active mx-xl-4 mx-lg-3 my-lg-0 my-3">
-									<a class="nav-link" href="{% url 'my_property' %}">Property</a>
+									<a class="nav-link" href="{% url 'admin_panel' %}">Admin Panel</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+									<a class="nav-link" href="{% url 'admin_msg' %}">Contact</a>
 								</li>
 							</ul>
 						</div>
@@ -339,7 +339,7 @@
 <script>
 	setTimeout(function(){
 		if ($('#msg').length > 0) {
-			$('#msg').fadeOut('slow');
+			$('#msg').remove();
 		}
 		}, 2000)
 </script>

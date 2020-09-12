@@ -6,4 +6,4 @@ class PropertySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Property
-        fields = ('email', 'mobile')
+        fields = ('id', 'email', 'mobile')

@@ -1,9 +1,11 @@
-{% load static %}
+
 <!DOCTYPE html>
 <html lang="zxx">
+{% load static %}
 
 <head>
-	<title>WhiteBricks Real Estates Category Bootstrap Responsive website Template | Portfolio :: W3layouts</title>
+	<title>WhiteBricks Real Estates Category Bootstrap Responsive website Template | Contact Us :: WhiteBricks</title>
+	<link rel="shortcut icon" href="https://static.vecteezy.com/system/resources/thumbnails/000/596/284/small/03232019-37.jpg' %}" type="image/ico" />
 	<!-- Meta tag Keywords -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="UTF-8" />
@@ -19,11 +21,10 @@
 		}
 	</script>
 	<!--// Meta tag Keywords -->
+
 	<!-- Custom-Files -->
 	<link rel="stylesheet" href="{% static 'myhome/css/bootstrap.css' %}">
 	<!-- Bootstrap-Core-CSS -->
-	<!-- gallery  -->
-	<link href="{% static 'myhome/css/prettyPhoto.css' %}" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="{% static 'myhome/css/style.css' %}" type="text/css" media="all" />
 	<link href="{% static 'myhome/css/extra.css' %}" rel="stylesheet" type="text/css">
 	<!-- Style-CSS -->
@@ -82,15 +83,12 @@
 								<!-- //social icons -->
 								{% if user.is_authenticated %}
 								<div class="col-3 header-loginw3ls text-lg-right text-center">
-									<a href="{% url 'logout' %}" class="log" >
+									<a href="{% url 'logout' %}" class="log">
 										<i class="fas fa-sign-out-alt mr-2"></i> logout</a>
 								</div>
 								<div class="col-2 header-loginw3ls text-lg-right text-center">
 									<a href="{% url 'view_notification' %}" id="tooltip">
 										<i class="far fa-bell"></i>
-										{% if notification_count %}
-											<span class="badge">{{ notification_count }}</span>
-										{% endif %}
 										<span class="tooltiptext">Notification</span>
 									</a>
 								</div>
@@ -105,7 +103,7 @@
 										 {% endif %}
 								</div>
 								{% else %}
-								<div class="col-4 header-loginw3ls text-lg-right text-center">
+								<div class="col-3 header-loginw3ls text-lg-right text-center">
 									<a href="{% url 'login' %}" >
 										<i class="fas fa-user mr-2"></i> Login</a>
 								</div>
@@ -148,14 +146,17 @@
 									<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 										<a class="dropdown-item" href="{% url 'admin_panel' %}">Admin panel</a>
 										<a class="dropdown-item" href="{% url 'admin_msg' %}">Message to user</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#clients">Clients</a>
+										<a class="dropdown-item" href="{% url 'about' %}">Our Agents</a>
 									</div>
 								</li>
 								{% endif %}
-								<li class="nav-item  active mx-xl-4 mx-lg-3 my-lg-0 my-3">
-									<a class="nav-link" href="{% url 'my_property' %}">Property</a>
+								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
+									<a class="nav-link" href="{% url 'admin_panel' %}">Admin panel</a>
 								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+								<li class="nav-item active">
+									<a class="nav-link" href="{% url 'admin_msg' %}">Contact</a>
 								</li>
 							</ul>
 						</div>
@@ -164,11 +165,17 @@
 				</div>
 			</div>
 		</header>
-        <!-- //header -->
-
-    {% block content %}
-
-	{% endblock %}
+		<!-- //header -->
+		<!-- banner-text -->
+		
+		<div class="banner-w3ltext about-w3bnr">
+			<div class="container">
+				<h1 class="text-white text-center">
+					<a href="{% url 'home' %}">Home</a> / Contact to Coustemers</h1>
+			</div>
+		</div>
+		<!-- //banner-text -->
+	</div>
 	<!-- account setting -->
 	<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
@@ -209,156 +216,217 @@
 		</div>
 	</div>
 	<!-- //account setting -->
+	<!-- //banner -->
 
-  <!-- footer top -->
-  <div class="footer-top py-5 text-center">
-    <div class="container py-xl-5 py-lg-3">
-        <h2 class="text-white mb-4">Select Your Dream Property</h2>
-        <h5 class="text-white mb-sm-5 mb-4 pb-sm-5 pb-4">Contact Us</h5>
-        <i class="fas fa-map-marker-alt"></i>
-    </div>
-</div>
-<!-- //footer top -->
+	<!-- contact -->
+	<section class="wthree-row w3-contact py-5">
+		<div class="container py-xl-5 py-lg-3">
+			<div class="text-center mb-lg-5 mb-4">
+				<h3 class="tittle mb-2">Contact to Coustemers</h3>
+				<p>Quick Send Us Message</p>
+			</div>
+			<div class="row contact-form py-3">
+				<!-- contact map -->
+				<div class="col-lg-6 map text-center">
+					<img src="{% static 'myhome/images/c.png' %}" alt="" class="img-fluid" />
+				</div>
+				<!-- //contact map -->
+				<!-- contact form -->
+				<div class="col-lg-6 wthree-form-left mt-lg-0 mt-5">
+					<div class="contact-top1">
+						<form action="" method="post" class="f-color" id="email-form">
+							{% csrf_token %}
+							<div class="form-group">
+								<label>To(Email)</label>
+								<input type="email" class="contact-formw3ls form-control" name="email" id="contactusername" required>
+							</div>
+							<div class="form-group">
+								<label>Subject</label>
+								<input type="text" class="contact-formw3ls form-control" name="subject" id="contactemail" required>
+							</div>
+							<div class="form-group">
+								<label>Your Message</label>
+								<textarea class="contact-formw3ls form-control" rows="5" name="message" id="contactcomment" required></textarea>
+							</div>
+							<button type="submit" id="sent-btn" class="btn submit contact-submit">Sent</button>
+						</form>
+						<div class="mt-5" id="spin" style="display: none;">
+							<div class="loader"></div>
+						</div>
+					</div>
+				</div>
+				<!-- //contact form -->
+			</div>
+			<div id="msg"></div>
+		</div>
+	</section>
+	<!-- //contact -->
 
-<!-- footer -->
-<div class="footer py-5 text-center">
-    <div class="container py-xl-5 py-lg-3">
-        <div class="address row mb-4">
-            <div class="col-lg-4 address-grid">
-                <div class="row address-info">
-                    <div class="col-md-3 address-left text-center">
-                        <i class="far fa-envelope"></i>
-                    </div>
-                    <div class="col-md-9 address-right text-left">
-                        <h6 class="ad-info text-uppercase mb-2">Email</h6>
-                        <p>
-                            <a href="mailto:example@email.com"> whitebricks1@gmail.com</a>
-                        </p>
-                        <p>
-                            <a href="mailto:example@email.com"> whitebricks2@gmail.com</a>
-                        </p>
-                    </div>
+	<!-- footer top -->
+	<div class="footer-top py-5 text-center">
+		<div class="container py-xl-5 py-lg-3">
+			<h2 class="text-white mb-4">Select Your Dream Property</h2>
+			<h5 class="text-white mb-sm-5 mb-4 pb-sm-5 pb-4">Contact Us</h5>
+			<i class="fas fa-map-marker-alt"></i>
+		</div>
+	</div>
+	<!-- //footer top -->
 
-                </div>
-            </div>
-            <div class="col-lg-4 address-grid my-lg-0 my-4">
-                <div class="row address-info">
-                    <div class="col-md-3 address-left text-center">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <div class="col-md-9 address-right text-left">
-                        <h6 class="ad-info text-uppercase mb-2">call us</h6>
-                        <p>+1 234 567 8901</p>
-                        <p>+1 567 567 9876</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 address-grid">
-                <div class="row address-info">
-                    <div class="col-md-3 address-left text-center">
-                        <i class="far fa-map"></i>
-                    </div>
-                    <div class="col-md-9 address-right text-left">
-                        <h6 class="ad-info text-uppercase mb-2">Address</h6>
-                        <p> WhiteBricks Inc Pvt Ltd,</p>
-                        <p> New York, USA</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- social icons footer -->
-        <div class="w3social-icons-footer text-center pt-sm-5 pt-3">
-            <ul>
-                <li>
-                    <a href="#" class="rounded-circle">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                </li>
-                <li class="px-2">
-                    <a href="#" class="rounded-circle">
-                        <i class="fab fa-google-plus-g"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="rounded-circle">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="rounded-circle">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <!-- //social icons footer -->
-    </div>
-</div>
-<!-- footer -->
+	<!-- footer -->
+	<div class="footer py-5 text-center">
+		<div class="container py-xl-5 py-lg-3">
+			<div class="address row mb-4">
+				<div class="col-lg-4 address-grid">
+					<div class="row address-info">
+						<div class="col-md-3 address-left text-center">
+							<i class="far fa-envelope"></i>
+						</div>
+						<div class="col-md-9 address-right text-left">
+							<h6 class="ad-info text-uppercase mb-2">Email</h6>
+							<p>
+								<a href="mailto:example@email.com"> whitebricks 1@gmail.com</a>
+							</p>
+							<p>
+								<a href="mailto:example@email.com"> whitebricks 2@gmail.com</a>
+							</p>
+						</div>
 
-<!-- copyright -->
-<div class="copy_right py-4 text-center">
-    <p class="text-white">©2020 WhiteBricks. All rights reserved | Design by
-        <a href="http://w3layouts.com/">Muhammed Hafis</a>
-    </p>
-</div>
-<!-- //copyright -->
+					</div>
+				</div>
+				<div class="col-lg-4 address-grid my-lg-0 my-4">
+					<div class="row address-info">
+						<div class="col-md-3 address-left text-center">
+							<i class="fas fa-mobile-alt"></i>
+						</div>
+						<div class="col-md-9 address-right text-left">
+							<h6 class="ad-info text-uppercase mb-2">call us</h6>
+							<p>+1 234 567 8901</p>
+							<p>+1 567 567 9876</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4 address-grid">
+					<div class="row address-info">
+						<div class="col-md-3 address-left text-center">
+							<i class="far fa-map"></i>
+						</div>
+						<div class="col-md-9 address-right text-left">
+							<h6 class="ad-info text-uppercase mb-2">Address</h6>
+							<p> WhiteBricks Inc Pvt Ltd,</p>
+							<p> New York, USA</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- social icons footer -->
+			<div class="w3social-icons-footer text-center pt-sm-5 pt-3">
+				<ul>
+					<li>
+						<a href="#" class="rounded-circle">
+							<i class="fab fa-facebook-f"></i>
+						</a>
+					</li>
+					<li class="px-2">
+						<a href="#" class="rounded-circle">
+							<i class="fab fa-google-plus-g"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" class="rounded-circle">
+							<i class="fab fa-twitter"></i>
+						</a>
+					</li>
+					<li class="px-2">
+						<a href="#" class="rounded-circle">
+							<i class="fab fa-dribbble"></i>
+						</a>
+					</li>
+					<li>
+						<a href="#" class="rounded-circle">
+							<i class="fab fa-linkedin-in"></i>
+						</a>
+					</li>
+					<li class="px-2">
+						<a href="#" class="rounded-circle">
+							<i class="fab fa-behance"></i>
+						</a>
+					</li>
+					<li class="">
+						<a href="#" class="rounded-circle">
+							<i class="fab fa-vimeo-v"></i>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- //social icons footer -->
+		</div>
+	</div>
+	<!-- footer -->
+
+	<!-- copyright -->
+	<div class="copy_right py-4 text-center">
+		<p class="text-white">©2020 WhiteBricks. All rights reserved | Design by
+			<a href="http://w3layouts.com/">Muhammed Hafis</a>
+		</p>
+	</div>
+	<!-- //copyright -->
 
 
-<!-- Js files -->
-<!-- JavaScript -->
-<script src="{% static 'myhome/js/jquery-2.2.3.min.js' %}"></script>
-<!-- Default-JavaScript-File -->
-<script src="{% static 'myhome/js/bootstrap.js' %}"></script>
-<!-- Necessary-JavaScript-File-For-Bootstrap -->
+	<!-- Js files -->
+	<!-- JavaScript -->
+	<script src="{% static 'myhome/js/jquery-2.2.3.min.js' %}"></script>
+	<!-- Default-JavaScript-File -->
+	<script src="{% static 'myhome/js/bootstrap.js' %}"></script>
+	<!-- Necessary-JavaScript-File-For-Bootstrap -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!--contact message-->
+	<script>
+		
+		$(document).ready(function(){
+			$(document).on("submit", "#email-form", function(event){
+				event.preventDefault();
+				$('#spin').show();
 
-<!-- flexSlider (for testimonials) -->
-<link rel="stylesheet" href="{% static 'myhome/css/flexslider.css' %}" type="text/css" media="screen" property="" />
-<script defer src="{% static 'myhome/js/jquery.flexslider.js' %}"></script>
-<script>
-    $(window).load(function () {
-        $('.flexslider').flexslider({
-            animation: "slide",
-            start: function (slider) {
-                $('body').removeClass('loading');
-            }
-        });
-    });
-
-</script>
-<!-- //flexSlider (for testimonials) -->
-
-<!-- stats -->
-<script src="{% static 'myhome/js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'myhome/js/jquery.countup.js' %}"></script>
-<script>
-    $('.counter').countUp();
-</script>
-<!-- //stats -->
-
-<script>
-	setTimeout(function(){
+				$.ajax({
+					url: "{% url 'admin_msg' %}",
+					type: "POST",
+					data: $("#email-form").serialize(),
+					success: function(data){
+						$("#spin").hide();
+					 	if(data.status == "success"){
+							$("#msg").html("<p class='alert alert-success text-center'>An email sent to " + data.email + "</p>" );
+							$("#email-form").trigger("reset");
+							setTimeout(function(){
+								$("#msg").fadeOut('slow');
+							}, 2000)
+						}
+					}
+				})
+			})
+		})
+/*
+		setTimeout(function(){
 		if ($('#msg').length > 0) {
-			$('#msg').fadeOut('slow');
+			$('#msg').remove();
 		}
-		}, 2000)
-</script>
-<!-- //password-script -->
+		}, 5000)*/
+	</script>
+	<!-- //password-script -->
 
-<!-- smooth scrolling -->
-<script src="{% static 'myhome/js/SmoothScroll.min.js' %}"></script>
-<!-- //smooth scrolling -->
+	<!-- smooth scrolling -->
+	<script src="{% static 'myhome/js/SmoothScroll.min.js' %}"></script>
+	<!-- //smooth scrolling -->
 
-<!-- move-top -->
-<script src="{% static 'myhome/js/move-top.js' %}"></script>
-<!-- easing -->
-<script src="{% static 'myhome/js/easing.js' %}"></script>
-<!--  necessary snippets for few javascript files -->
-<script src="{% static 'myhome/js/district.js' %}"></script>
+	<!-- move-top -->
+	<script src="{% static 'myhome/js/move-top.js' %}"></script>
+	<!-- easing -->
+	<script src="{% static 'myhome/js/easing.js' %}"></script>
+	<!--  necessary snippets for few javascript files -->
+	<script src="{% static 'myhome/js/district.js' %}"></script>
 
-<script src="{% static 'myhome/js/bootstrap.js' %}"></script>
-<!-- Necessary-JavaScript-File-For-Bootstrap -->
-<!-- //Js files -->
+	<script src="{% static 'myhome/js/bootstrap.js' %}"></script>
+	<!-- Necessary-JavaScript-File-For-Bootstrap -->
+	<!-- //Js files -->
 
 </body>
 

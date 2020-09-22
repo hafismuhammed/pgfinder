@@ -18,8 +18,6 @@ from .tokens import account_activation_token
 from django.core.mail import EmailMessage
 from .models import Property, Notifications, Profile 
 from .forms import AccomodationForm, ProfileForm, PasswordChangeForm
-from .filters import OrderFilter
-from .serializer import PropertySerializer
 from .decerator import unauthenticated_user, admin_only
 
 
@@ -39,7 +37,7 @@ def about(request):
     context = {'profile': profile}
   return render(request, "myhome/about.html", context)
 
-# Contact
+# Contact us
 def contact(request):
   context = {}
   if request.user.is_authenticated:
@@ -65,7 +63,7 @@ def contact(request):
   else:
     return render(request, 'myhome/contact.html', context)
 
-# Register
+# User registeration
 @unauthenticated_user
 def Register(request):
   if request.method == 'POST':
@@ -108,7 +106,7 @@ def Register(request):
   else:
       return render(request, "myhome/register.html")
 
-#account activation
+#Account activation
 def activate(request, uidb64, token):
   try:
     uid = force_text(urlsafe_base64_decode(uidb64))
@@ -272,7 +270,7 @@ def edit_profile(request):
   return render(request, 'myhome/edit_profile.html', context)
 
   
-  # Ad posting
+# Advertising properties
 @login_required(login_url='/whitebricks/login/')
 def add_property(request):
   if request.method == 'POST':
@@ -350,7 +348,6 @@ def property_previw(request, requested_id):
 def contact_details(request):
   if request.method == 'GET' and request.is_ajax():
     property_id = request.GET.get('property')
-    print(property_id)
     if request.user.is_authenticated:
       contact = Property.objects.get(id=property_id)
       data = {
@@ -364,20 +361,26 @@ def contact_details(request):
 
 #property view 
 def property_list(request):
-  profile = Profile.objects.get(user=request.user.id)
+  #profile = Profile.objects.get(user=request.user.id)
   qur = request.GET.get('types')
-  print(qur)
   property_list = Property.objects.filter(types=qur)
   paginator = Paginator(property_list, 5)
   page = request.GET.get('page')
   properties = paginator.get_page(page)
 
   count_pro = property_list.count()
+
   context = {
-    'profile':profile,
     'properties': properties,
     'total_pro': count_pro
   }
+  if request.user.is_authenticated:
+    profile = Profile.objects.get(user=request.user.id)
+    context = {
+      'profile': profile,
+      'properties': properties,
+      'total_pro': count_pro
+      }
   return render(request, 'myhome/all_property.html', context)
 
 # view own property
@@ -439,7 +442,7 @@ def edit_property(request, requested_property_id):
     }
   return render(request, 'myhome/edit_property.html', context)
 
-# Delete property
+# Delete properties
 def delete_property(request, requested_id):
   property_details = Property.objects.get(id=requested_id)
   property_details.delete()
@@ -455,8 +458,6 @@ def notification(request):
   
       property_id = request.POST['property'] 
       owner = request.POST['owner_id']
-      print(property_id)
-      print(owner)
       property_object = Property.objects.get(id=property_id)
       owner_object = User.objects.all().get(username=owner)
       notification = "Hi {}, {} \n have intrested in your property '{}'".format(property_object.owner, user.first_name, property_object.headline) 

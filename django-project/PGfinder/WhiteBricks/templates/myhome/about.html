@@ -109,14 +109,8 @@
 									</a>
 								</div>
 								<div class="col-4 header-loginw3ls">
-									<a href="#" class="log" data-toggle="modal" data-target="#exampleModalCenter2">
-									    {% if profile.profile_pic %}
-										<span><img src="/media/{{ profile.profile_pic }}" alt=""  style="height:30px;width:30px;border-radius:50%" />
-										hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
-										{% else %}	
-										<span><img src="{% static 'myhome/images/profile.png' %}" style="height:30px;width:30px;border-radius:50%"></span>
-										 hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
-										 {% endif %}
+									<a href="#" class="log" data-toggle="modal" data-target="#exampleModalCenter2">	
+										 hello, {{ user.username }}<i class="fas fa-caret-down"></i></a>		 
 								</div>
 								{% else %}
 								<div class="col-4 header-loginw3ls text-lg-right text-center">
@@ -153,18 +147,9 @@
 								<li class="nav-item  active mx-xl-4 mx-lg-3 my-lg-0 my-3">
 									<a class="nav-link" href="{% url 'about' %}">About Us</a>
 								</li>
-								{% if request.user.is_staff %}
-								<li class="nav-item dropdown">
-									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-									    aria-expanded="false">
-										Admin
-									</a>
-									<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-										<a class="dropdown-item" href="{% url 'admin_panel' %}">Admin panel</a>
-										<a class="dropdown-item" href="{% url 'admin_msg' %}">Message to user</a>
-									</div>
+								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
+									<a class="nav-link" href="{% url 'new_property' %}">Avertise with us</a>
 								</li>
-								{% endif %}
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
 									<a class="nav-link" href="{% url 'my_property' %}">Property</a>
 								</li>
@@ -200,13 +185,7 @@
 				<div class="modal-body">
 					<div class="login px-4 mx-auto mw-100">
 						<h5 class="text-center mb-4">Account Settings</h5>
-						{% if profile.profile_pic %}
-						<img src="/media/{{ profile.profile_pic }}" class="col-lg-6 map text-center" style="height:150px;width:150px;border-radius:50%;
-						display: block;margin-left: auto;margin-right: auto;width: 50%;">
-						</div>
-						{% else %}
 						<img src="{% static 'myhome/images/profile.png' %}" class="rounded mx-auto d-block" style="height:150px;width:150px;border-radius:50%;">
-						{% endif %}
 						<h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
 						<ul class="text-center list-unstyled mt-3 mb-4">
 							<li class="py-2 border-bottom">
@@ -636,7 +615,7 @@
 		<div id="newslide">
 			<div class="row">
 			<div class="col-md-2" >
-				<a class="navbar-brand" href="#" style="font-size: 35px;">WhiteBricks
+				<a class="navbar-brand" href="{% url 'home' %}" style="font-size: 35px;">WhiteBricks
 					<span>Real Property</span>
 				</a>
 			</div>

@@ -16,33 +16,27 @@ from django.db.models import Q
 
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-from .models import Property, Notifications, Profile 
-from .forms import AccomodationForm, ProfileForm, PasswordChangeForm
-from .decerator import unauthenticated_user, admin_only
+from .models import Property, Notifications, Profile, BookingDetails 
+from .forms import AccomodationForm, ProfileForm, BookingForm
+from .decerator import unauthenticated_user
+import razorpay
 
 
 # Home page
 def home(request):
-  context = {}
-  if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
-    context = {'profile': profile}
+  properties = Property.objects.filter(is_booked=False).order_by('-date')[:3]
+  context = { 'properties':  properties }
   return render(request, 'myhome/index.html', context)
 
 # About us
 def about(request):
-  context = {}
   if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
-    context = {'profile': profile}
-  return render(request, "myhome/about.html", context)
+    return render(request, "myhome/about.html")
 
 # Contact us
 def contact(request):
-  context = {}
   if request.user.is_authenticated:
     profile = Profile.objects.get(user=request.user.id)
-    context = {'profile': profile}
     
   if request.method == "POST":
     name = request.POST['name']
@@ -157,38 +151,35 @@ def logingout(request):
 #change password
 @login_required(login_url='/whitebricks/login/')
 def change_password(request):
-  context = {}
   if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
-    context = {'profile': profile}
 
-  if request.method == 'POST':
-    old_password = request.POST['old_password']
-    new_password1 = request.POST['new_password1']
-    new_password2 = request.POST['new_password2']
-    
-    user = User.objects.get(id=request.user.id)
-    if user.check_password(old_password):
-      user.set_password(new_password1)
-      user.save()
+    if request.method == 'POST':
+      old_password = request.POST['old_password']
+      new_password1 = request.POST['new_password1']
+      new_password2 = request.POST['new_password2']
+      
+      user = User.objects.get(id=request.user.id)
+      if user.check_password(old_password):
+        user.set_password(new_password1)
+        user.save()
 
-      mail_subject = 'Password Change Conformation'
-      message = "Hi, {} \n You've successfully changed your Whitebricks account password.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(request.user.first_name)
-      to_email = request.user.email
-      email = EmailMessage(
-        mail_subject, message, to=[to_email]
-      )
-      email.send()
+        mail_subject = 'Password Change Conformation'
+        message = "Hi, {} \n You've successfully changed your Whitebricks account password.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(request.user.first_name)
+        to_email = request.user.email
+        email = EmailMessage(
+          mail_subject, message, to=[to_email]
+        )
+        email.send()
 
-      login(request, user)
-      messages.add_message(request, messages.SUCCESS, 'Password Successfully Changed !')
-      return HttpResponseRedirect('/whitebricks/home/')
-    else:
-      messages.add_message(request, messages.ERROR, 'Incorrect Current Password')
-      return HttpResponseRedirect('/whitebricks/change_password')
-    
+        login(request, user)
+        messages.add_message(request, messages.SUCCESS, 'Password Successfully Changed !')
+        return HttpResponseRedirect('/whitebricks/home/')
+      else:
+        messages.add_message(request, messages.ERROR, 'Incorrect Current Password')
+        return HttpResponseRedirect('/whitebricks/change_password')
+      
   else:
-    return render(request, 'myhome/password_change_form.html', context)
+    return render(request, 'myhome/password_change_form.html')
 
 #forgot password
 def forgot_password(request):
@@ -296,12 +287,8 @@ def add_property(request):
       messages.add_message(request, messages.SUCCESS, 'Successfully added your new property')
       return HttpResponseRedirect('/whitebricks/my_property/')
   else:
-    profile = Profile.objects.get(user=request.user.id)
     property_form = AccomodationForm(request.POST, request.FILES)
-    context = {
-      'profile': profile,
-      'form': property_form
-    }
+    context = {'form': property_form}
   return render(request, 'myhome/myroom.html', context)
 
 #search property
@@ -320,15 +307,6 @@ def search(request):
       'total_pro': property_count,
       'location': qur
       }
-
-  if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
-    context = {
-      'profile': profile,
-      'properties': properties,
-      'total_pro': property_count,
-      'location': qur
-      }
   return render(request, 'myhome/search.html', context)
 
 # property detailed view
@@ -336,20 +314,14 @@ def property_previw(request, requested_id):
   property_id = request.GET.get('property')
   property_details = Property.objects.get(id=requested_id)
   context = {'property': property_details}
-  if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
-    context = {
-      'profile': profile,
-      'property': property_details
-      }
   return render(request, "myhome/property_detail_view.html", context)
 
 # View property cont info: 
-def contact_details(request):
+# View property cont info: 
+def contact_details(request, requested_id):
   if request.method == 'GET' and request.is_ajax():
-    property_id = request.GET.get('property')
     if request.user.is_authenticated:
-      contact = Property.objects.get(id=property_id)
+      contact = Property.objects.get(id=requested_id)
       data = {
         'email': contact.email,
         'mobile': contact.mobile,
@@ -374,19 +346,11 @@ def property_list(request):
     'properties': properties,
     'total_pro': count_pro
   }
-  if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
-    context = {
-      'profile': profile,
-      'properties': properties,
-      'total_pro': count_pro
-      }
   return render(request, 'myhome/all_property.html', context)
 
 # view own property
 @login_required(login_url='/whitebricks/login/')
 def my_property(request):
-  profile = Profile.objects.get(user=request.user.id)
   property_list = Property.objects.filter(owner=request.user)
   paginator = Paginator(property_list, 5)
   page = request.GET.get('page')
@@ -394,7 +358,6 @@ def my_property(request):
   count_pro = property_list.count()
 
   context = { 
-    'profile': profile,
     'properties': properties,
     'total_pro': count_pro 
     }
@@ -424,7 +387,6 @@ def edit_property(request, requested_property_id):
       messages.add_message(request, messages.SUCCESS, 'Successfully updated your property details')
       return HttpResponseRedirect('/whitebricks/my_property/')
   else:
-    profile = Profile.objects.get(user=request.user.id)
     property_details = Property.objects.get(id=requested_property_id)
     property_form = AccomodationForm(
       initial={
@@ -438,7 +400,6 @@ def edit_property(request, requested_property_id):
     context = {
       'form': property_form,
       'property': property_details,
-      'profile': profile
     }
   return render(request, 'myhome/edit_property.html', context)
 
@@ -450,24 +411,21 @@ def delete_property(request, requested_id):
   messages.add_message(request, messages.WARNING, 'Your property is deleted permanently')
   return HttpResponseRedirect('/whitebricks/my_property/')
 
-# notification settings
-def notification(request):
-  if request.user.is_authenticated:
-    user = request.user 
-    if request.method == 'POST':
-  
-      property_id = request.POST['property'] 
-      owner = request.POST['owner_id']
-      property_object = Property.objects.get(id=property_id)
-      owner_object = User.objects.all().get(username=owner)
-      notification = "Hi {}, {} \n have intrested in your property '{}'".format(property_object.owner, user.first_name, property_object.headline) 
-      property_object.notify.add(user)
-      notifications = Notifications.objects.create(notification=notification, property=property_object, owner=owner_object)
 
-      notifications.save()
+# notification settings
+def notification(request, requested_id):
+  if request.user.is_authenticated:
+    user = request.user
+    if request.method == 'POST':
+      property_object = Property.objects.get(id=requested_id)
+      notification = "Hi {}, {} \n  visited  your property '{}' in {}".format(property_object.owner, user.username, property_object.headline, property_object.location) 
+      notification = Notifications.objects.create(notification=notification, property=property_object, owner=property_object.owner)
+      property_object.visitors.add(user)
+      notification.save()
+
       return JsonResponse({"msg":"success", "authenticated": True})
-  else:
-    return JsonResponse({"authenticated": False})
+    else:
+      return JsonResponse({"authenticated": False})
 
 #notification view
 def view_notification(request):
@@ -476,10 +434,7 @@ def view_notification(request):
   notification = Notifications.objects.filter(owner=user).order_by('-date')
   Notifications.objects.filter(owner=user, is_seen=False).update(is_seen=True)
 
-  context = {
-    'profile': profile,
-    'notifications': notification,
-  }
+  context = {'notifications': notification,}
   return render(request, 'myhome/notification.html', context)
 
 def notification_count(request):
@@ -492,86 +447,57 @@ def delete_notification(request):
   notifications = Notifications.objects.filter(owner=request.user.id)
   notifications.delete()
   return HttpResponseRedirect('/whitebricks/veiw_notification')
-      
-# admin panel
-@login_required(login_url='/whitebricks/admin_login/')
-@admin_only
-def admin_panel(request):
-  context = {}
-  if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
 
-  user_count = User.objects.all().count()
-  property_count = Property.objects.all().count()
-  property_list = Property.objects.all()
-  paginator = Paginator(property_list, 3)
-  page = request.GET.get('page')
-  properties = paginator.get_page(page)
-
-  coustemer_list = User.objects.all()
-  list_no = Paginator(coustemer_list, 10)
-  page = request.GET.get('page')
-  coustemers = list_no.get_page(page)
-
-  context = {
-    'profile': profile,
-    'total_user': user_count,
-    'total_property': property_count,
-    'properties': properties,
-    'coustemers': coustemers
-  }
-
-  return render(request, 'admin/adminpanel.html', context)
-
-# message to users(for admin)
+# Room Booking confirmations
 @login_required(login_url='/whitebricks/login/')
-@admin_only
-def admin_contact(request):
-  context = {}
-  if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
-    context = {'profile': profile}
-    
-  if request.method == "POST":
-    to_email = request.POST['email']
-    subject = request.POST['subject']
-    message = request.POST['message']
-
-    email = EmailMessage(
-      subject, 
-      message,  
-      to=[to_email]
-      )
-    email.send()
-
-    return JsonResponse({"status": "success", "email": to_email})
-  else:
-    return render(request, 'admin/admin_message.html', context)
-
-#coustemer information (for admin)
-@login_required(login_url='/whitebricks/login/')
-@admin_only
-def coustemer_info(request, requested_id):
-  profile = Profile.objects.get(user=request.user.id)
-  coustemer_info = Profile.objects.prefetch_related('user').get(user=requested_id)
-  property_list = Property.objects.filter(owner=requested_id)
-  paginator = Paginator(property_list, 3)
-  page = request.GET.get('page')
-  properties = paginator.get_page(page)
-  total_property = property_list.count()
+def booking_details(request, requested_id):
+  property_details = Property.objects.get(id=requested_id, is_booked=False)
+  amount = (property_details.rent) * 100
   
-  context = {
-    'profile': profile,
-    'coustemer_info': coustemer_info,
-    'properties': properties,
-    'total_property': total_property
-  }
-  return render(request, 'admin/coustemer_info.html', context)
+  if request.method == 'POST':
+    form = BookingForm(request.POST)
+    client = razorpay.Client(auth=("rzp_test_8ByHObWr7wXRoA", "vbj5N0Om11HrxPOCqiHGwBbz"))
+    payment = client.order.create({'amount': amount, 'currency': 'USD', 'payment_capture': '1'})
+    print(payment)
+    if form.is_valid():
+      booking_details = BookingDetails()
+      booking_details.first_name = form.cleaned_data['first_name']
+      booking_details.last_name = form.cleaned_data['last_name']
+      booking_details.email = form.cleaned_data['email_address']
+      booking_details.mobile = form.cleaned_data['mobile_number']
+      booking_details.user = request.user
+      booking_details.property = property_details
+      booking_details.payment_id = payment['id']
 
-#deleting coustemer property
-def delete_coust_pro(request, requested_id):
-  property_details = Property.objects.get(id=requested_id)
-  property_details.delete()
+      booking_details.save()
 
-  messages.add_message(request, messages.WARNING, 'Your property is deleted permanently')
-  return HttpResponseRedirect('/whitebricks/admin_panel')
+      property_details = Property.objects.get(id=requested_id, is_booked=False)
+      #property_details.is_booked = True
+      #property_details.save()
+
+      return render(request, 'myhome/booking_confirm.html', {'payment': payment, 'user': request.user})
+
+  else:
+    form = BookingForm(request.POST)
+    context = {
+      'form': form,
+      'property': property_details,
+    }
+  return render(request, 'myhome/booking_confirm.html', context)
+
+# Payment and confirmations
+def make_payment(request):
+  if request.method == 'POST':
+    booking = request.POST
+    order_id = ''
+    for key, val in booking.items():
+      if key == 'razorpay_order_id':
+        order_id = val
+        break
+
+    booking = BookingDetails.objects.filter(payment_id=order_id).first()
+    booking.is_paid = True
+    booking.save()
+
+    print('order_id')
+  return render(request, 'myhome/booking_payment_success.html')

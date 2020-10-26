@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.urls import path
 from . import views
-from django.contrib.auth import views as auth_views
 from .tokens import account_activation_token
  
 urlpatterns = [
@@ -23,14 +22,12 @@ urlpatterns = [
     path('property_details/<int:requested_id>', views.property_previw, name='property_details'),
     path('edit_property/<int:requested_property_id>', views.edit_property, name='edit_property'),
     path('delete_property/<int:requested_id>', views.delete_property, name='delete_property'),
-    path('contact_details/', views.contact_details, name='contact_details'),
-    path('notification', views.notification, name='notification'),
+    path('contact_details/<int:requested_id>', views.contact_details, name='contact_details'),
+    path('notification/<int:requested_id>', views.notification, name='notification'),
     path('veiw_notification', views.view_notification, name='view_notification'),
     path('delete_notification', views.delete_notification, name='delete_notification'),
-    path('admin_panel', views.admin_panel, name='admin_panel'),
-    path('admin_contact', views.admin_contact, name='admin_msg'),
-    path('coustemer_info/<int:requested_id>', views.coustemer_info, name='coustemer_info'),
-    path('coustemer_info/delete_property/<int:requested_id>', views.delete_coust_pro, name='del_coust_pro'),
-    ]
+    path('booking_details/<int:requested_id>', views.booking_details, name='booking_details'),
+    path('payment_success', views.make_payment, name='payment_success')
+]
 
    

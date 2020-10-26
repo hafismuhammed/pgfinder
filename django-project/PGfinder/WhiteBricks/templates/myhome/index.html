@@ -97,13 +97,7 @@
 								</div>
 								<div class="col-4 header-loginw3ls">
 									<a href="#" class="log" data-toggle="modal" data-target="#exampleModalCenter2">
-									    {% if profile.profile_pic %}
-										<span><img src="/media/{{ profile.profile_pic }}" alt=""  style="height:30px;width:30px;border-radius:50%" />
-										hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
-										{% else %}	
-										<span><img src="{% static 'myhome/images/profile.png' %}" style="height:30px;width:30px;border-radius:50%"></span>
-										 hi, {{ user.first_name }}<i class="fas fa-caret-down"></i></a>
-										 {% endif %}
+										 hello, {{ user.username }}<i class="fas fa-caret-down"></i></a>
 								</div>
 								{% else %}
 								<div class="col-4 header-loginw3ls text-lg-right text-center">
@@ -140,18 +134,9 @@
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
 									<a class="nav-link" href="{% url 'about' %}">About Us</a>
 								</li>
-								{% if request.user.is_staff %}
-								<li class="nav-item dropdown">
-									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
-									    aria-expanded="false">
-										Admin
-									</a>
-									<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-										<a class="dropdown-item" href="{% url 'admin_panel' %}">Admin panel</a>
-										<a class="dropdown-item" href="{% url 'admin_msg' %}">Message to user</a>
-									</div>
+								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
+									<a class="nav-link" href="{% url 'new_property' %}">Avertise with us</a>
 								</li>
-								{% endif %}
 								<li class="nav-item mx-xl-4 mx-lg-3 my-lg-0 my-3">
 									<a class="nav-link" href="{% url 'my_property' %}">Properties</a>
 								</li>
@@ -166,6 +151,7 @@
 			</div>
 		</header>
 		<!-- //header -->
+
 		<!-- banner text -->
 		<div class="banner-text-agile">
 			<div class="container">
@@ -179,9 +165,23 @@
 				{% endif %} 
 					<h1>Perfect Place</h1>
 					<h4 class="text-uppercase mt-md-3 mt-2 mb-md-4 mb-3">for your home</h4>
-					<p class="text-white">Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-						ullamco laboris</p>
-					<a href="{% url 'about' %}" class="banner-button btn mt-md-5 mt-4">Know More</a>
+
+					<div class="place-grids">
+						<form action="{% url 'search' %}" method="get">
+							<div class="row">
+								<div class="col-sm-9 col-10 place-grid mt-sm-0 mt-3">
+									<h5>Location</h5>
+									<div><input type="search" name="search" id="search" placeholder="search..." class="sel" required ></div>
+									<div class="text-center py-3">
+									</div>
+								</div>
+								<div class="col-sm-3 col-6 place-grid">
+									<input type="submit" value="Search" >
+								</div>
+							</div>
+						</form>
+					</div>				
+						<a href="{% url 'new_property' %}" class="glow btn btn-warning mt-md-5 mt-4"><strong>Add your Property</strong></a>
 				</div>
 			</div>
 		</div>
@@ -199,17 +199,11 @@
 				<div class="modal-body">
 					<div class="login px-4 mx-auto mw-100">
 						<h5 class="text-center mb-4">Account Settings</h5>
-						{% if profile.profile_pic %}
-						<img src="/media/{{ profile.profile_pic }}" class="col-lg-6 map text-center" style="height:150px;width:150px;border-radius:50%;
-						display: block;margin-left: auto;margin-right: auto;width: 50%;">
-						</div>
-						{% else %}
 						<img src="{% static 'myhome/images/profile.png' %}" class="rounded mx-auto d-block" style="height:150px;width:150px;border-radius:50%;">
-						{% endif %}
 						<h6 class="text-center">{{ user.first_name }} {{ user.last_name }}</h6>
 						<ul class="text-center list-unstyled mt-3 mb-4">
 							<li class="py-2 border-bottom">
-								<a href="{% url 'edit_profile' %}" class="detail"> Edit Profile</a>
+								<a href="{% url 'edit_profile' %}" class="detail">Profile</a>
 							</li>
 							<li class="py-2 border-bottom">
 								<a href="{% url 'my_property' %}" class="detail">My Property</a>
@@ -229,81 +223,40 @@
 	<!-- //account setting -->
 	<!-- //banner -->
 
-	<!-- banner-bottom -->
-	<div class="serach-w3agile py-5">
-		<div class="container py-xl-4 py-lg-3">
-			<h3 class="title-w3ls mb-md-5 mb-4 font-weight-bold text-center">Find Your Home</h3>
-			<div class="place-grids">
-				<form action="{% url 'search' %}" method="get">
-					<div class="row">
-						<div class="col-sm-9 col-10 place-grid mt-sm-0 mt-3">
-							<h5>Location</h5>
-							<div><input type="search" name="search" id="search" placeholder="search..." class="sel" required ></div>
-							<div class="text-center py-3">
-								<a href="{% url 'new_property' %}" class="btn btn-warning glow"><strong> you own property? list here ></strong></a>
-							</div>
-						</div>
-						<div class="col-sm-3 col-6 place-grid">
-							<input type="submit" value="Search" >
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!-- //banner-bottom -->
-
+	
 	<!-- middle section -->
-	<div class="middle-w3l">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-6 col-md-4 button">
+	<div class="text-center mb-md-5 mb-4">
+		<h3 class="tittle mb-sm-2">Rooms For You</h3>
+		<p>Find your perfect Rooms rooms </p>
+	</div>
 
+	<div class="album py-5 bg-light">
+		<div class="container">
+	
+		  <div class="row">
+			  {% for property in properties %}
+			<div class="col-md-4">
+			  <div class="card mb-4 shadow-sm pro">
+				<span class="pro-badge">{{ property.types }}</span>
+				<img src="{{ property.images.url }}"  width="100%" height="225" class="imag-fluid" alt="">
+				<div class="card-body">
+					<h4><strong><a href="{% url 'property_details' property.id %}" class="detail" target="_blank">{{ property.headline }}</a></strong></h4><hr>
+					<i class="fas fa-map-marker-alt"></i><span>{{ property.city }}</span>
+					<h5><a href="{% url 'property_details' property.id %}" class="detail" target="_blank">Starting from $ {{ property.rent }}*</a></h5>
+				  <div class="d-flex justify-content-between align-items-center">
+					
+					  <a href="{% url 'property_details' property.id %}" class="btn btn-outline-secondary my-3">Enquire</a>
+				  </div>
 				</div>
-				<div class="col-lg-6 col-md-8 left-build-wthree py-5 px-sm-5 px-4">
-					<div class="py-xl-5 py-lg-3 px-xl-4">
-						<h4>A Beautiful Beach House</h4>
-						<h6 class="mt-3 mb-xl-5 mb-4">Excepteur sint occaecat</h6>
-						<p>sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-							ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-						<ul class="list-beach mt-lg-5 mt-4">
-							<li>
-								<div class="row">
-									<div class="col-1 text-center">
-										<i class="fas fa-hand-point-right"></i>
-									</div>
-									<div class="col-10">
-										<p>Totam rem aperiamet quasi architecto beatae vitae dicta sunt explicabo beatae vitae dicta.</p>
-									</div>
-								</div>
-							</li>
-							<li class="my-3">
-								<div class="row">
-									<div class="col-1 text-center">
-										<i class="fas fa-hand-point-right"></i>
-									</div>
-									<div class="col-10">
-										<p>A rchitecto beatae Totam rem aperiamet quasi architecto beatae vitae dicta sunt explicabo.</p>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div class="row">
-									<div class="col-1 text-center">
-										<i class="fas fa-hand-point-right"></i>
-									</div>
-									<div class="col-10">
-										<p>Dicta sunt explicabo Totam rem aperiamet quasi architecto beatae vitae dicta sunt explicabo.</p>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
+			  </div>
+			</div>
+
+			{% endfor %} 
+
 			</div>
 		</div>
 	</div>
-	<!-- //middle section -->
+	<!-- //middle section -->		  
 
 	<!-- services -->
 	<div class="what-w3ls py-5" id="services">

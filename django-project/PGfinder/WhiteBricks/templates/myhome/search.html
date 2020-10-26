@@ -21,55 +21,38 @@
 		</div>
 
 	{% if properties %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-	
-	<div class="container">
-	<div class="row">
-		<h5 class="my-3">{{ total_pro }}- Properties on Rent in the Location at PG Price</h5>
-		{% for property in properties %}
-		<div class="mx-auto">
-			<div class="modal-body">
-			<div class="p-5 pro">
-				<div class="row">
-					<div class="col-md-4">
-						<div class="item">
-							<a href="{% url 'property_details' property.id %}"  target="_blank">
-							<span class="pro-badge">{{ property.types }}</span>
-								<img src="{{ property.images.url }}"  class="img-fluid pro-img">
-							</a>
+	<div class="album py-5 bg-light">		
+		<div class="container">
+			<h5 class="my-3">{{ total_pro }}- Properties on Rent in the Location at PG Price</h5>
+			<div class="row">
+				{% for property in properties %}
+				<div class="col-md-4">
+					<div class="card mb-4 shadow-sm pro">
+					<span class="pro-badge">{{ property.types }}</span>
+					<img src="{{ property.images.url }}"  width="100%" height="225" class="imag-fluid" alt="">
+					<div class="card-body">
+						<h4><strong><a href="{% url 'property_details' property.id %}" class="detail" target="_blank">{{ property.headline }}</a></strong></h4><hr>
+						<i class="fas fa-map-marker-alt"></i><span>{{ property.city }}</span>
+						<h5><a href="{% url 'property_details' property.id %}" class="detail" target="_blank">Starting from $ {{ property.rent }}*</a></h5>
+						<div class="d-flex justify-content-between align-items-center">
+						
+							<a href="{% url 'property_details' property.id %}" class="btn btn-outline-secondary my-3">Enquire</a>
 						</div>
 					</div>
-					<div class="col-md-5">
-						<div class="caption">
-							<div>
-								<h4><a href="{% url 'property_details' property.id %}" class="detail" target="_blank">{{ property.rent }}</a></h4>
-							</div>
-							<i class="far fa-thumbs-up"></i><span>Deposite: {{ property.deposite }}</span>
-							<div>
-								<h5><a href="{% url 'property_details' property.id %}" class="detail" target="_blank">{{ property.headline }}, {{ property.location }}</a></h5>
-							</div>
-							<div>
-								<strong>Location: </strong>{{ property.city }}
-							</div>
-							<div id="response"></div>
-						</div>
-					</div>
-					<div class="col-md-3 text-center">
-						<a href="{% url 'property_details' property.id %}" target="_blank" class="btn btn-primary">details</a>
 					</div>
 				</div>
+				
+			{% endfor %}
+			{% else %}
+			<div class="jumbotron">
+				<h1 class="display-4 text-center">Sorry, No houses found !!! </h1>
+				<p class="lead text-center">We couldn’t find any homes for the filters you have applied.Try Changing The Filters</p>
+				<hr class="my-4">
+				
 			</div>
+			{% endif %}
 		</div>
 	</div>
-	{% endfor %}
-    {% else %}
-    <div class="jumbotron">
-		<h1 class="display-4 text-center">Sorry, No houses found !!! </h1>
-		<p class="lead text-center">We couldn’t find any homes for the filters you have applied.Try Changing The Filters</p>
-		<hr class="my-4">
-		
-	</div>
-	{% endif %}
-</div>
 </div>
 <!-- //search result container -->
 <!--paginator-->
@@ -104,7 +87,7 @@
 <div id="newslide">
 	<div class="row">
 	<div class="col-md-2" >
-		<a class="navbar-brand" href="#" style="font-size: 35px;">WhiteBricks
+		<a class="navbar-brand" href="{% url 'home' %}" style="font-size: 35px;">WhiteBricks
 			<span>Real Property</span>
 		</a>
 	</div>

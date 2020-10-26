@@ -102,10 +102,12 @@
                                         <div class="col-md-6 text-right">
                                                 <form action="" method="get" id="notify_form" >
                                                         {% csrf_token %}
-                                                        <input type="hidden" name="owner_id" value="{{ property.owner }}" id="property" >
-                                                        <input type="hidden" name="property" value="{{ property.id }}" id="property_id" >
                                                         <button type="submit" id="request-btn" class="btn btn-primary">Contact info:</button>
                                                 </form>
+                                        </div>
+
+                                        <div class="text-center">
+                                                <a href="{% url 'booking_details' property.id  %}" class="btn btn-primary px-5" id="enquiry" style="display: none;">Enquire Now</a>
                                         </div>
                                 </div>
                         </div>
@@ -119,12 +121,13 @@
         $("#request-btn").click(function(){
 				
             $.ajax({
-               url: "{% url 'contact_details' %}",
+               url: "{% url 'contact_details' property.id %}",
                type: "GET",
                data: { property: "{{ property.id }}" },
                dataType:"json",
                success: function(data){
                         if(data.authenticated){
+                                $("#enquiry").show();
                                 $("#request-btn").hide();
                                 $("#details").html("<h6>Contact me" + "<br>" + "Email:" + data.email + "<br>" +"Mobile:" + data.mobile + "<hr>")
                         }
@@ -142,7 +145,7 @@ $(document).ready(function(event){
 
 		$.ajax({
 			type:'POST',
-			url:"{% url 'notification' %}",
+			url:"{% url 'notification' property.id %}",
 			data:$('#notify_form').serialize(),
 			dataType:'Json',
 			success:function(data){

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from phonenumber_field.modelfields import PhoneNumberField
+
 
 
 class Profile(models.Model):
@@ -7,18 +9,15 @@ class Profile(models.Model):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    contact_number = models.IntegerField(null=True, blank=True)
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
+    contact_number = PhoneNumberField()
     address = models.CharField(max_length=200, null=True)
     occupation = models.CharField(max_length=200, null=True)
     gender = models.CharField(max_length=100, choices=status, null=True)
-    about = models.TextField(null=True)
-    profile_pic = models.ImageField(upload_to='profile_pic', default="profile.png", null=True, blank=True)
-    verify_otp = models.IntegerField(null=True)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return self.address
+        return self.user
 
 class Property(models.Model):
 
@@ -35,14 +34,15 @@ class Property(models.Model):
     location = models.CharField(max_length=100)
     address = models.CharField(max_length=200, null=True)
     types = models.CharField(max_length=100, choices=catogery, null=True)
-    facilites = models.TextField()
-    rent = models.CharField(max_length=200)
-    deposite = models.CharField(max_length=100, null=True)
+    facilites = models.TextField(null=True)
+    rent = models.FloatField()
+    deposite = models.FloatField()
     images = models.FileField(upload_to='media/uploads', null=True)
     email = models.EmailField()
-    mobile = models.IntegerField(null=True)
-    date = models.DateTimeField(auto_now_add=True)
-    notify = models.ManyToManyField(User, default=None, blank=True, related_name='notify')
+    mobile = models.CharField(max_length=15, null=True)
+    is_booked = models.BooleanField(default=False)
+    visitors = models.ManyToManyField(User, default=None, blank=True, related_name='visitor')
+    date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.headline 
@@ -57,4 +57,18 @@ class Notifications(models.Model):
 
     def __str_(self):
         return self.notification
+
+class BookingDetails(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, null=True, blank=True, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    mobile = PhoneNumberField()
+    payment_id = models.CharField(max_length=100)
+    is_paid = models.BooleanField(default=False)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.first_name 
 

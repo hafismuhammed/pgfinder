@@ -151,33 +151,32 @@ def logingout(request):
 #change password
 @login_required(login_url='/whitebricks/login/')
 def change_password(request):
-  if request.user.is_authenticated:
 
-    if request.method == 'POST':
-      old_password = request.POST['old_password']
-      new_password1 = request.POST['new_password1']
-      new_password2 = request.POST['new_password2']
-      
-      user = User.objects.get(id=request.user.id)
-      if user.check_password(old_password):
-        user.set_password(new_password1)
-        user.save()
+  if request.method == 'POST':
+    old_password = request.POST['old_password']
+    new_password1 = request.POST['new_password1']
+    new_password2 = request.POST['new_password2']
+    
+    user = User.objects.get(id=request.user.id)
+    if user.check_password(old_password):
+      user.set_password(new_password1)
+      user.save()
 
-        mail_subject = 'Password Change Conformation'
-        message = "Hi, {} \n You've successfully changed your Whitebricks account password.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(request.user.first_name)
-        to_email = request.user.email
-        email = EmailMessage(
-          mail_subject, message, to=[to_email]
-        )
-        email.send()
+      mail_subject = 'Password Change Conformation'
+      message = "Hi {}, \n You've successfully changed your Whitebricks account password.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(request.user.first_name)
+      to_email = request.user.email
+      email = EmailMessage(
+        mail_subject, message, to=[to_email]
+      )
+      email.send()
 
-        login(request, user)
-        messages.add_message(request, messages.SUCCESS, 'Password Successfully Changed !')
-        return HttpResponseRedirect('/whitebricks/home/')
-      else:
-        messages.add_message(request, messages.ERROR, 'Incorrect Current Password')
-        return HttpResponseRedirect('/whitebricks/change_password')
-      
+      login(request, user)
+      messages.add_message(request, messages.SUCCESS, 'Password Successfully Changed !')
+      return HttpResponseRedirect('/whitebricks/home/')
+    else:
+      messages.add_message(request, messages.ERROR, 'Incorrect Current Password')
+      return HttpResponseRedirect('/whitebricks/change_password')
+    
   else:
     return render(request, 'myhome/password_change_form.html')
 
@@ -218,7 +217,7 @@ def reset_password(request):
 @login_required(login_url='/whitebricks/login/')
 def edit_profile(request):
   if request.method == 'POST':
-    profile_form = ProfileForm(request.POST, request.FILES)
+    profile_form = ProfileForm(request.POST)
 
     if profile_form.is_valid():
 
@@ -234,8 +233,6 @@ def edit_profile(request):
       profile_objects.gender = profile_form.cleaned_data['gender']
       profile_objects.occupation = profile_form.cleaned_data['occupation']
       profile_objects.address = profile_form.cleaned_data['address']
-      profile_objects.about = profile_form.cleaned_data['about']
-      profile_objects.profile_pic = profile_form.cleaned_data['profile_pic']
       profile_objects.user = request.user
 
       profile_objects.save()
@@ -250,8 +247,7 @@ def edit_profile(request):
       "firt_name":user_details.first_name, "last_name":user_details.last_name, 
       "email":user_details.email, "conact_number":profile.contact_number,
       "gender":profile.gender,"occupation":profile.occupation,
-      "address":profile.address, "about":profile.about,
-      "profile_pic":profile.profile_pic,
+      "address":profile.address, 
       })
     context = {
       'form':profile_form, 
@@ -296,8 +292,8 @@ def search(request):
   qur = request.GET.get('search')
   if qur is not None:
     looking = Q(city__icontains=qur) | Q(address__icontains=qur)
-    property_list = Property.objects.filter(looking)
-    paginator = Paginator(property_list, 5)
+    property_list = Property.objects.filter(looking, is_booked=False)
+    paginator = Paginator(property_list, 9)
     page = request.GET.get('page')
     properties = paginator.get_page(page)
     property_count = property_list.count()    
@@ -312,11 +308,10 @@ def search(request):
 # property detailed view
 def property_previw(request, requested_id):
   property_id = request.GET.get('property')
-  property_details = Property.objects.get(id=requested_id)
+  property_details = Property.objects.get(id=requested_id, is_booked=False)
   context = {'property': property_details}
   return render(request, "myhome/property_detail_view.html", context)
-
-# View property cont info: 
+ 
 # View property cont info: 
 def contact_details(request, requested_id):
   if request.method == 'GET' and request.is_ajax():
@@ -335,8 +330,8 @@ def contact_details(request, requested_id):
 def property_list(request):
   #profile = Profile.objects.get(user=request.user.id)
   qur = request.GET.get('types')
-  property_list = Property.objects.filter(types=qur)
-  paginator = Paginator(property_list, 5)
+  property_list = Property.objects.filter(types=qur, is_booked=False)
+  paginator = Paginator(property_list, 9)
   page = request.GET.get('page')
   properties = paginator.get_page(page)
 
@@ -460,20 +455,31 @@ def booking_details(request, requested_id):
     payment = client.order.create({'amount': amount, 'currency': 'USD', 'payment_capture': '1'})
     print(payment)
     if form.is_valid():
-      booking_details = BookingDetails()
-      booking_details.first_name = form.cleaned_data['first_name']
-      booking_details.last_name = form.cleaned_data['last_name']
-      booking_details.email = form.cleaned_data['email_address']
-      booking_details.mobile = form.cleaned_data['mobile_number']
-      booking_details.user = request.user
-      booking_details.property = property_details
-      booking_details.payment_id = payment['id']
+      
+      first_name = form.cleaned_data['first_name']
+      last_name = form.cleaned_data['last_name']
+      email = form.cleaned_data['email_address']
+      mobile = form.cleaned_data['mobile_number']
+      user = request.user
+      property = property_details
+      payment_id = payment['id']
+      booking_details = BookingDetails.objects.create(
+        first_name=first_name, last_name=last_name, email=email, mobile=mobile, user=user, property=property, payment_id=payment_id
+        )
 
       booking_details.save()
 
       property_details = Property.objects.get(id=requested_id, is_booked=False)
       #property_details.is_booked = True
       #property_details.save()
+
+      email_subject = "Message from WhiteBricks- PG booking"
+      to_email = property_details.email
+      message_to_pg = "Hi {}, \n Your property in {} have new paying guest. Contact your paying guest for confirmation.\n contact details of paying guest:\n Name: {} {}\n Email: {}\n Mobile: {}.\n for more details use our helpline.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(property_details.owner, property_details.location, first_name, last_name, email, mobile)
+      email = EmailMessage(
+        email_subject, message_to_pg, to=[to_email]
+      )
+      email.send()
 
       return render(request, 'myhome/booking_confirm.html', {'payment': payment, 'user': request.user})
 
@@ -499,5 +505,12 @@ def make_payment(request):
     booking.is_paid = True
     booking.save()
 
-    print('order_id')
+    email_subject = "Booking confirmation from WhiteBricks"
+    to_email = booking.email
+    message_to_pg = "Hi {}, \n You've successfully completed your booking. The house owner will be contact as soon as posible.\n for more details use our helpline.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(booking.first_name)
+    email = EmailMessage(
+      email_subject, message_to_pg, to=[to_email]
+    )
+    email.send()
+
   return render(request, 'myhome/booking_payment_success.html')

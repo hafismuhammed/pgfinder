@@ -116,7 +116,6 @@
   }
 
   .glow {
-    width:500px;
     background-color: #004A7F;
     -webkit-border-radius: 10px;
     border-radius: 10px;
@@ -208,29 +207,7 @@
     -o-animation: glowing 1500ms infinite;
     animation: glowing 1500ms infinite;
   }
-  @-webkit-keyframes glowing {
-    0% { background-color: #b29100; -webkit-box-shadow: 0 0 3px #b29100; }
-    50% { background-color:  #d6d31b; -webkit-box-shadow: 0 0 40px  #d6d31b; }
-    100% { background-color: #b29100; -webkit-box-shadow: 0 0 3px #b29100; }
-  }
   
-  @-moz-keyframes glowing {
-    0% { background-color: #b29100; -moz-box-shadow: 0 0 3px #b29100; }
-    50% { background-color:  #d6d31b; -moz-box-shadow: 0 0 40px  #d6d31b; }
-    100% { background-color: #b29100; -moz-box-shadow: 0 0 3px #b29100; }
-  }
-  
-  @-o-keyframes glowing {
-    0% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
-    50% { background-color:  #d6d31b; box-shadow: 0 0 40px  #d6d31b; }
-    100% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
-  }
-  
-  @keyframes glowing {
-    0% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
-    50% { background-color:  #d6d31b; box-shadow: 0 0 40px  #d6d31b; }
-    100% { background-color: #b29100; box-shadow: 0 0 3px #b29100; }
-  }
   #filter {
     -moz-transition: transform 1s;
     -webkit-transition: transform 1s;

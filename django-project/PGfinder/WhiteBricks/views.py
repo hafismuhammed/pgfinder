@@ -35,9 +35,7 @@ def about(request):
 
 # Contact us
 def contact(request):
-  if request.user.is_authenticated:
-    profile = Profile.objects.get(user=request.user.id)
-    
+  
   if request.method == "POST":
     name = request.POST['name']
     from_email = request.POST['email']
@@ -55,7 +53,7 @@ def contact(request):
 
     return JsonResponse({"status": "success"})
   else:
-    return render(request, 'myhome/contact.html', context)
+    return render(request, 'myhome/contact.html')
 
 # User registeration
 @unauthenticated_user
@@ -470,8 +468,8 @@ def booking_details(request, requested_id):
       booking_details.save()
 
       property_details = Property.objects.get(id=requested_id, is_booked=False)
-      #property_details.is_booked = True
-      #property_details.save()
+      property_details.is_booked = True
+      property_details.save()
 
       email_subject = "Message from WhiteBricks- PG booking"
       to_email = property_details.email

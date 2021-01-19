@@ -1,4 +1,5 @@
 import random
+import uuid
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.models import User
@@ -13,11 +14,12 @@ from django.contrib.auth import update_session_auth_hash
 from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 from django.db.models import Q 
+from django.views.decorators.csrf import csrf_exempt
 
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-from .models import Property, Notifications, Profile, BookingDetails 
-from .forms import AccomodationForm, ProfileForm, BookingForm
+from .models import Property, PropertyImages, Notifications, Profile, BookingDetails, PayingGuestCheckout, BookedProperty
+from .forms import PropertyForm, ProfileForm, BookingForm
 from .decerator import unauthenticated_user
 import razorpay
 
@@ -30,7 +32,6 @@ def home(request):
 
 # About us
 def about(request):
-  if request.user.is_authenticated:
     return render(request, "myhome/about.html")
 
 # Contact us
@@ -57,7 +58,7 @@ def contact(request):
 
 # User registeration
 @unauthenticated_user
-def Register(request):
+def user_register(request):
   if request.method == 'POST':
     firstname = request.POST["first_name"]
     lastname = request.POST["last_name"]
@@ -99,7 +100,7 @@ def Register(request):
       return render(request, "myhome/register.html")
 
 #Account activation
-def activate(request, uidb64, token):
+def activate_account(request, uidb64, token):
   try:
     uid = force_text(urlsafe_base64_decode(uidb64))
     user = User.objects.get(pk=uid)
@@ -114,10 +115,9 @@ def activate(request, uidb64, token):
   else:
     return HttpResponse('activation link is invalid')
 
-# login
+
 @unauthenticated_user
-def loginPage(request):
-    
+def user_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -140,8 +140,8 @@ def loginPage(request):
     else:
       return render(request, "myhome/login.html")
 
-#logout
-def logingout(request):
+
+def user_logout(request):
   logout(request)
   messages.add_message(request, messages.SUCCESS, 'Successfully Logout')
   return HttpResponseRedirect('/whitebricks/home/')
@@ -237,19 +237,18 @@ def edit_profile(request):
 
       return HttpResponseRedirect('/whitebricks/edit_profile')
   else:
-    user_details = User.objects.get(id=request.user.id)
+    user = request.user
     profile = Profile.objects.get(user=request.user)
-    #property_details = Property.objects.get(id=requested_property_id)
     profile_form = ProfileForm(
       initial={
-      "firt_name":user_details.first_name, "last_name":user_details.last_name, 
-      "email":user_details.email, "conact_number":profile.contact_number,
+      "firt_name":user.first_name, "last_name":user.last_name, 
+      "email":user.email, "conact_number":profile.contact_number,
       "gender":profile.gender,"occupation":profile.occupation,
       "address":profile.address, 
       })
     context = {
       'form':profile_form, 
-      'user':user_details, 
+      'user':user, 
       'profile':profile
       }
   return render(request, 'myhome/edit_profile.html', context)
@@ -259,11 +258,12 @@ def edit_profile(request):
 @login_required(login_url='/whitebricks/login/')
 def add_property(request):
   if request.method == 'POST':
-    property_form = AccomodationForm(request.POST, request.FILES)
+    property_form = PropertyForm(request.POST, request.FILES)
 
     if property_form.is_valid():
       
       property_object = Property()
+      property_images = PropertyImages()
       property_object.headline = property_form.cleaned_data['headline']
       property_object.city = property_form.cleaned_data['city']
       property_object.location = property_form.cleaned_data['location'] 
@@ -271,22 +271,25 @@ def add_property(request):
       property_object.types = property_form.cleaned_data['types'] 
       property_object.facilites = property_form.cleaned_data['facilites']
       property_object.rent = property_form.cleaned_data['rent']
-      property_object.deposite = property_form.cleaned_data['deposite'] 
+      property_object.deposit = property_form.cleaned_data['deposit'] 
       property_object.email = property_form.cleaned_data['email'] 
       property_object.mobile = property_form.cleaned_data['mobile']
-      property_object.images = request.FILES['images']
       property_object.owner = request.user
-      
       property_object.save()
+     
+      property_images.image = request.FILES['image']
+      property_images.property = property_object
+      property_images.owner = request.user
+      property_images.save()
       messages.add_message(request, messages.SUCCESS, 'Successfully added your new property')
       return HttpResponseRedirect('/whitebricks/my_property/')
   else:
-    property_form = AccomodationForm(request.POST, request.FILES)
+    property_form = PropertyForm(request.POST, request.FILES)
     context = {'form': property_form}
   return render(request, 'myhome/myroom.html', context)
 
 #search property
-def search(request):
+def search_properties(request):
   qur = request.GET.get('search')
   if qur is not None:
     looking = Q(city__icontains=qur) | Q(address__icontains=qur)
@@ -304,10 +307,22 @@ def search(request):
   return render(request, 'myhome/search.html', context)
 
 # property detailed view
-def property_previw(request, requested_id):
-  property_id = request.GET.get('property')
+@login_required(login_url='/whitebricks/login/')
+def property_detailview(request, requested_id):
+  user = request.user
   property_details = Property.objects.get(id=requested_id, is_booked=False)
-  context = {'property': property_details}
+  profile = Profile.objects.get(user=user)  
+  booking_form = BookingForm(
+    initial = {
+        "firt_name":user.first_name, "last_name":user.last_name, 
+        "email":user.email, "conact_number":profile.contact_number,
+        "address":profile.address, 
+      }
+  )
+  context = {
+    'property': property_details,
+    'form': booking_form,
+    }
   return render(request, "myhome/property_detail_view.html", context)
  
 # View property cont info: 
@@ -325,8 +340,7 @@ def contact_details(request, requested_id):
       return JsonResponse({'authenticated': False})
 
 #property view 
-def property_list(request):
-  #profile = Profile.objects.get(user=request.user.id)
+def list_properties(request):
   qur = request.GET.get('types')
   property_list = Property.objects.filter(types=qur, is_booked=False)
   paginator = Paginator(property_list, 9)
@@ -343,9 +357,9 @@ def property_list(request):
 
 # view own property
 @login_required(login_url='/whitebricks/login/')
-def my_property(request):
+def my_properties(request):
   property_list = Property.objects.filter(owner=request.user)
-  paginator = Paginator(property_list, 5)
+  paginator = Paginator(property_list, 10)
   page = request.GET.get('page')
   properties = paginator.get_page(page)
   count_pro = property_list.count()
@@ -354,16 +368,17 @@ def my_property(request):
     'properties': properties,
     'total_pro': count_pro 
     }
-  return render(request, 'myhome/property.html', context)
+  return render(request, 'myhome/user_properties.html', context)
 
 # editing property details
 def edit_property(request, requested_property_id):
   if request.method == 'POST':
-    property_form = AccomodationForm(request.POST, request.FILES)
+    property_form = PropertyForm(request.POST, request.FILES)
 
     if property_form.is_valid():
       
-      property_details = Property.objects.get(id=requested_property_id)
+      property_details = Property.objects.get(id=requested_property_id, owner=request.user)
+      property_images = PropertyImages()
       property_details.headline = property_form.cleaned_data['headline']
       property_details.city = property_form.cleaned_data['city']
       property_details.location = property_form.cleaned_data['location'] 
@@ -371,24 +386,27 @@ def edit_property(request, requested_property_id):
       property_details.types = property_form.cleaned_data['types'] 
       property_details.facilites = property_form.cleaned_data['facilites']
       property_details.rent = property_form.cleaned_data['rent']
-      property_details.deposite = property_form.cleaned_data['deposite'] 
+      property_details.deposit = property_form.cleaned_data['deposit'] 
       property_details.email = property_form.cleaned_data['email'] 
       property_details.mobile = property_form.cleaned_data['mobile']
-      property_details.images = request.FILES['images']
-    
       property_details.save()
+      
+      property_images.image = request.FILES['image']
+      property_images.property = property_details
+      property_images.owner = request.user
+      property_images.save()
       messages.add_message(request, messages.SUCCESS, 'Successfully updated your property details')
       return HttpResponseRedirect('/whitebricks/my_property/')
   else:
-    property_details = Property.objects.get(id=requested_property_id)
-    property_form = AccomodationForm(
+    property_details = Property.objects.get(id=requested_property_id, owner=request.user)
+    property_images = PropertyImages.objects.filter(property=property_details, owner=request.user)
+    property_form = PropertyForm(
       initial={
       "headline": property_details.headline, "city": property_details.city,
       "address": property_details.address, "types": property_details.types,
       "location": property_details.location, "facilities": property_details.facilites, 
       "rent": property_details.rent, "email": property_details.email, 
-      "mobile": property_details.mobile, "images": property_details.images,
-      "deposite": property_details.deposite
+      "mobile": property_details.mobile, 
       })
     context = {
       'form': property_form,
@@ -396,11 +414,10 @@ def edit_property(request, requested_property_id):
     }
   return render(request, 'myhome/edit_property.html', context)
 
-# Delete properties
+
 def delete_property(request, requested_id):
   property_details = Property.objects.get(id=requested_id)
   property_details.delete()
-
   messages.add_message(request, messages.WARNING, 'Your property is deleted permanently')
   return HttpResponseRedirect('/whitebricks/my_property/')
 
@@ -413,7 +430,6 @@ def notification(request, requested_id):
       property_object = Property.objects.get(id=requested_id)
       notification = "Hi {}, {} \n  visited  your property '{}' in {}".format(property_object.owner, user.username, property_object.headline, property_object.location) 
       notification = Notifications.objects.create(notification=notification, property=property_object, owner=property_object.owner)
-      property_object.visitors.add(user)
       notification.save()
 
       return JsonResponse({"msg":"success", "authenticated": True})
@@ -421,7 +437,7 @@ def notification(request, requested_id):
       return JsonResponse({"authenticated": False})
 
 #notification view
-def view_notification(request):
+def view_notifications(request):
   user = request.user.id
   profile = Profile.objects.get(user=user)
   notification = Notifications.objects.filter(owner=user).order_by('-date')
@@ -435,8 +451,8 @@ def notification_count(request):
   notification_count = Notifications.objects.filter(owner=user, is_seen=False).count()
   return {'notification_count': notification_count}
 
-#delete notifications
-def delete_notification(request):
+
+def delete_notifications(request):
   notifications = Notifications.objects.filter(owner=request.user.id)
   notifications.delete()
   return HttpResponseRedirect('/whitebricks/veiw_notification')
@@ -479,7 +495,7 @@ def booking_details(request, requested_id):
       )
       email.send()
 
-      return render(request, 'myhome/booking_confirm.html', {'payment': payment, 'user': request.user})
+      return render(request, 'myhome/booking_confirm.html', {'payment': payment, 'user': request.user, 'property': property_details})
 
   else:
     form = BookingForm(request.POST)
@@ -512,3 +528,113 @@ def make_payment(request):
     email.send()
 
   return render(request, 'myhome/booking_payment_success.html')
+
+# booking properties using payment gateways
+@login_required(login_url='/whitebricks/login/')
+def room_booking(request, requested_id):
+  user = request.user
+  property_instance = Property.objects.get(id=requested_id)
+  
+  if request.method == 'POST':
+      first_name = request.POST['first_name']
+      last_name = request.POST['last_name']
+      address = request.POST['address']
+      phone = request.POST['contact_number']
+      email = request.POST['email']
+      
+      booking_price = property_instance.deposite
+      reciept = str(uuid.uuid1())
+      client = razorpay.Client(auth=("rzp_test_8ByHObWr7wXRoA", "vbj5N0Om11HrxPOCqiHGwBbz"))
+      DATA = {
+        'amount': booking_price * 100,
+        'currency': 'USD',
+        'receipt': 'WhiteBricks room booking',
+        'payment_capture': 1,
+        'notes': {}
+      }
+      order_details = client.order.create(data=DATA)
+      paying_guestcheckout_instance = PayingGuestCheckout(
+        paying_guest = user,
+        order_id = order_details.get('id'),
+        total_amount = booking_price,
+        reciept_num = reciept,
+      )
+      paying_guestcheckout_instance.save()
+
+      profile_instance = Profile.objects.get(user=user)
+      profile_instance.address = address
+      profile_instance.contact_number = phone
+      profile_instance.save()
+      user.first_name = first_name
+      user.last_name = last_name
+      user.email = email
+      user.save()
+      property_instance.is_booked = True
+      property_instance.save()
+
+      email_subject = "Message from WhiteBricks- PG booking"
+      to_email = property_instance.email
+      message_to_owner = """Hi {}, \n Your property in {} have new paying guest. 
+      Contact your paying guest for confirmation.
+      \n contact details of paying guest:\n Name: {} {}\n Email: {}\n Mobile: {}.
+      \n for more details use our helpline.\n \n Thanks for using WhiteBricks service ! 
+      \n The WhiteBricks Team""".format(property_instance.owner, property_instance.location, user.first_name, user.last_name, email, phone)
+      email = EmailMessage(
+        email_subject, message_to_owner, to=[to_email]
+      )
+      email.send()
+
+      context = {
+        'order_id': order_details.get('id'),
+        'booking_price': booking_price,
+        'amountscript': booking_price * 100,
+        'currency': 'USD',
+        'companyname': 'WhiteBricks',
+        'username': request.user.first_name + ' ' + request.user.last_name,
+        'useremail': request.user.email,
+        'phone': phone,
+        'rzpkey': 'rzp_test_8ByHObWr7wXRoA',
+      }
+      return render(request, 'myhome/payment.html', context)
+  else:
+    return HttpResponseRedirect(reverse('property_details', kwargs={
+      'requested_id': requested_id
+      }))
+
+
+@csrf_exempt
+@login_required(login_url='/whitebricks/login/')
+def mark_pymentsuccess(request):
+  if request.is_ajax():
+    order_id = request.POST['order_id']
+    payment_id = request.POST['payment_id']
+    payment_signature = request.POST['payment_signature']
+    user = request.user
+    paying_guestcheckout_instance = PayingGuestCheckout.objects.get(
+      order_id = order_id,
+      paying_guest = user
+    )
+    paying_guestcheckout_instance.payment_signature = payment_signature
+    paying_guestcheckout_instance.payment_id = payment_id
+    paying_guestcheckout_instance.payment_completed = True
+    paying_guestcheckout_instance.save()
+
+    email_subject = "Booking confirmation from WhiteBricks"
+    to_email = request.user.email
+    message_to_pg = """Hi {}, \n You've successfully completed your booking. 
+    The house owner will be contact as soon as posible.\n for more details use our helpline.
+    \n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team""".format(request.user.first_name)
+    email = EmailMessage(
+      email_subject, message_to_pg, to=[to_email]
+    )
+    email.send()
+
+    return JsonResponse({'result': 'payment completed'})
+
+
+
+
+
+
+
+

@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Property, Notifications, Profile, BookingDetails
+from .models import Property, Notifications, Profile, BookingDetails, PropertyImages
 
 
 
 admin.site.site_header = "WhiteBricks Admin Dashboard"
-admin.site.title = "WhiteBricks"
+admin.site.site_title = "WhiteBricks"
 
 class CustProperty(admin.ModelAdmin):
     list_display = ('owner', 'headline', 'city', 'location', 'address', 'is_booked')
@@ -25,6 +25,7 @@ class CustBookingDetails(admin.ModelAdmin):
 admin.site.register(Profile)
 admin.site.register(Property, CustProperty)
 admin.site.register(BookingDetails, CustBookingDetails)
+admin.site.register(PropertyImages)
 
 
 

@@ -36,17 +36,24 @@ class Property(models.Model):
     types = models.CharField(max_length=100, choices=catogery, null=True)
     facilites = models.TextField(null=True)
     rent = models.FloatField()
-    deposite = models.FloatField()
+    deposit = models.FloatField()
     images = models.FileField(upload_to='media/uploads', null=True)
     email = models.EmailField()
     mobile = models.CharField(max_length=15, null=True)
     is_booked = models.BooleanField(default=False)
-    visitors = models.ManyToManyField(User, default=None, blank=True, related_name='visitor')
     date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.headline 
 
+class PropertyImages(models.Model):
+    owner = models.ForeignKey(User, null=True, blank=False, on_delete=models.CASCADE)
+    property = models.ForeignKey(Property, null=True, blank=False, on_delete=models.CASCADE, related_name='propertyimg')
+    image = models.FileField(upload_to='media/uploads', null=False)
+
+    def __str__(self):
+        return self.property.headline
+    
 
 class Notifications(models.Model):
     owner = models.ForeignKey(User, null=True, blank=True,on_delete=models.CASCADE)
@@ -72,3 +79,23 @@ class BookingDetails(models.Model):
     def __str__(self):
         return self.first_name 
 
+
+class PayingGuestCheckout(models.Model):
+    paying_guest = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=False)
+    order_id = models.CharField(max_length=255)
+    payment_id = models.CharField(max_length=255, null=True, default=None)
+    total_amount = models.FloatField()
+    payment_signature = models.CharField(max_length=255, null=True, default=None)
+    reciept_num = models.CharField(max_length=255)
+    payment_completed =  models.BooleanField(default=False)
+    payment_date = models.DateTimeField(auto_now_add=True)
+
+
+class BookedProperty(models.Model):
+    paying_guest = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    checkout_details = models.ForeignKey(PayingGuestCheckout, on_delete=models.CASCADE, null=False, blank=False)
+    property_location = models.CharField(max_length=255)
+    property_rent = models.FloatField()
+    property_address = models.CharField(max_length=200)
+
+    

@@ -6,7 +6,7 @@ from .tokens import account_activation_token
 urlpatterns = [
     path('home/', views.home, name='home'),
     path('about/', views.about, name='about'),
-    path('contact/', views.contact, name='contact'),
+    path('contact/', views.contact_to_company, name='contact'),
     path('my_property/', views.my_properties, name='my_property'),
     path('register/', views.user_register, name='register'),
     path('activate/<uidb64>/<token>/', views.activate_account, name='activate'),
@@ -26,9 +26,6 @@ urlpatterns = [
     path('notification/<int:requested_id>', views.notification, name='notification'),
     path('veiw_notification', views.view_notifications, name='view_notification'),
     path('delete_notification', views.delete_notifications, name='delete_notification'),
-    path('booking_details/<int:requested_id>', views.booking_details, name='booking_details'),
-    path('payment_success', views.make_payment, name='payment_success'),
-
     path('room-booking/<int:requested_id>', views.room_booking, name='room_booking'),
     path('payment-confirmation', views.mark_pymentsuccess, name='payment_confirmation'),
 ]

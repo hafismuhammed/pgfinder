@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Property, Notifications, Profile, BookingDetails, PropertyImages
+from .models import Property, Notifications, Profile, PropertyImages
 
 
 
@@ -14,17 +14,10 @@ class CustProperty(admin.ModelAdmin):
     ordering = ['id']
     list_filter = ('types', 'date', )
 
-class CustBookingDetails(admin.ModelAdmin):
-    list_display = ('user', 'property', 'first_name', 'last_name', 'email', 'mobile', 'date')
-    ordering = ['date']
-    list_filter = ('property', 'date', )
-    search_fields = ('user', 'property')
-    
 # Register your models here for admin control.
 
 admin.site.register(Profile)
 admin.site.register(Property, CustProperty)
-admin.site.register(BookingDetails, CustBookingDetails)
 admin.site.register(PropertyImages)
 
 

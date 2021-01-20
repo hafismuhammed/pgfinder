@@ -65,19 +65,6 @@ class Notifications(models.Model):
     def __str_(self):
         return self.notification
 
-class BookingDetails(models.Model):
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    property = models.ForeignKey(Property, null=True, blank=True, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.EmailField()
-    mobile = PhoneNumberField()
-    payment_id = models.CharField(max_length=100)
-    is_paid = models.BooleanField(default=False)
-    date = models.DateField(auto_now_add=True)
-
-    def __str__(self):
-        return self.first_name 
 
 
 class PayingGuestCheckout(models.Model):

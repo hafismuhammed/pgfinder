@@ -17,8 +17,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
 from .tokens import account_activation_token
-from django.core.mail import EmailMessage
-from .models import Property, PropertyImages, Notifications, Profile, BookingDetails, PayingGuestCheckout, BookedProperty
+from .models import Property, PropertyImages, Notifications, Profile, PayingGuestCheckout, BookedProperty
 from .forms import PropertyForm, ProfileForm, BookingForm
 from .decerator import unauthenticated_user
 import razorpay
@@ -35,7 +34,7 @@ def about(request):
     return render(request, "myhome/about.html")
 
 # Contact us
-def contact(request):
+def contact_to_company(request):
   
   if request.method == "POST":
     name = request.POST['name']
@@ -456,78 +455,6 @@ def delete_notifications(request):
   notifications = Notifications.objects.filter(owner=request.user.id)
   notifications.delete()
   return HttpResponseRedirect('/whitebricks/veiw_notification')
-
-# Room Booking confirmations
-@login_required(login_url='/whitebricks/login/')
-def booking_details(request, requested_id):
-  property_details = Property.objects.get(id=requested_id, is_booked=False)
-  amount = (property_details.rent) * 100
-  
-  if request.method == 'POST':
-    form = BookingForm(request.POST)
-    client = razorpay.Client(auth=("rzp_test_8ByHObWr7wXRoA", "vbj5N0Om11HrxPOCqiHGwBbz"))
-    payment = client.order.create({'amount': amount, 'currency': 'USD', 'payment_capture': '1'})
-    print(payment)
-    if form.is_valid():
-      
-      first_name = form.cleaned_data['first_name']
-      last_name = form.cleaned_data['last_name']
-      email = form.cleaned_data['email_address']
-      mobile = form.cleaned_data['mobile_number']
-      user = request.user
-      property = property_details
-      payment_id = payment['id']
-      booking_details = BookingDetails.objects.create(
-        first_name=first_name, last_name=last_name, email=email, mobile=mobile, user=user, property=property, payment_id=payment_id
-        )
-
-      booking_details.save()
-
-      property_details = Property.objects.get(id=requested_id, is_booked=False)
-      property_details.is_booked = True
-      property_details.save()
-
-      email_subject = "Message from WhiteBricks- PG booking"
-      to_email = property_details.email
-      message_to_pg = "Hi {}, \n Your property in {} have new paying guest. Contact your paying guest for confirmation.\n contact details of paying guest:\n Name: {} {}\n Email: {}\n Mobile: {}.\n for more details use our helpline.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(property_details.owner, property_details.location, first_name, last_name, email, mobile)
-      email = EmailMessage(
-        email_subject, message_to_pg, to=[to_email]
-      )
-      email.send()
-
-      return render(request, 'myhome/booking_confirm.html', {'payment': payment, 'user': request.user, 'property': property_details})
-
-  else:
-    form = BookingForm(request.POST)
-    context = {
-      'form': form,
-      'property': property_details,
-    }
-  return render(request, 'myhome/booking_confirm.html', context)
-
-# Payment and confirmations
-def make_payment(request):
-  if request.method == 'POST':
-    booking = request.POST
-    order_id = ''
-    for key, val in booking.items():
-      if key == 'razorpay_order_id':
-        order_id = val
-        break
-
-    booking = BookingDetails.objects.filter(payment_id=order_id).first()
-    booking.is_paid = True
-    booking.save()
-
-    email_subject = "Booking confirmation from WhiteBricks"
-    to_email = booking.email
-    message_to_pg = "Hi {}, \n You've successfully completed your booking. The house owner will be contact as soon as posible.\n for more details use our helpline.\n \n Thanks for using WhiteBricks service ! \n The WhiteBricks Team".format(booking.first_name)
-    email = EmailMessage(
-      email_subject, message_to_pg, to=[to_email]
-    )
-    email.send()
-
-  return render(request, 'myhome/booking_payment_success.html')
 
 # booking properties using payment gateways
 @login_required(login_url='/whitebricks/login/')
